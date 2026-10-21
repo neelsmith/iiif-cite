@@ -1,0 +1,41 @@
+project:
+  type: website
+  output-dir: quarto_build
+
+version: "0.1.0"
+metadata:
+  date: today
+  
+execute:
+  freeze: auto
+date: last-modified  
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    toc: true
+
+website:
+  title: "iiif-cite"
+  page-footer:
+    center: "`iiif-cite` version **{{< meta version >}}**, website last updated {{< meta date >}}"
+
+  navbar:
+    background: primary
+    search: true
+    left:
+      - text: "Home"
+        file: index.qmd                 
+            
+          
+
+    right:
+      - icon: person-circle
+        menu:
+          - text: "iiif-cite on github"
+            href: https://github.com/neelsmith/iiif-cite
+          - text: "Neel Smith: other hobby projects"
+            href: https://neelsmith.github.io/avocational/
+        aria-label: Home 

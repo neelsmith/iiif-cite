@@ -40,3 +40,9 @@
 - Neel tested with the HMT Venetus A and SUB Göttingen manifests on his Mac: both work.
   Committed and pushed as "Initial working version" (d5e21e4).
 - Open: https hosting (HMT images are http); plan.md "Open questions".
+
+## Session 2 — 2026-10-21
+
+- Build output renamed `dist/index.html` → `dist/iiif-cite.html` (Neel; the Quarto site links
+  `./iiif-cite.html`): `git mv src/index.html src/iiif-cite.html`, `rollupOptions.input` in
+  vite.config.ts. Dev server page is now `/iiif-cite.html` (nothing at "/").

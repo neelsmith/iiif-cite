@@ -1,0 +1,12 @@
+---
+title: "`iiif-cite`"
+---
+
+
+A single-page web app to make IIIF browsing citable.
+
+Demos:
+
+- [*Io. Friderici Weidleri Historia Astronomiae*](./iiif-cite.html#manifest=https%3A%2F%2Fmanifests.sub.uni-goettingen.de%2Fiiif%2Fpresentation%2FPPN623133725%2Fmanifest) (manifest from [Universität Göttingen](https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest))
+- Complutensian Bible
+- Venetus A manuscript

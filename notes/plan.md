@@ -23,7 +23,8 @@ the way imageviewer does for non-IIIF images.
 
 - `src/lib/` — pure logic, unit-tested; `src/ui/` — DOM; `src/main.ts` — entry.
 - Build: Vite + TypeScript + Vitest; `build/inline-all.ts` (copied from imageviewer) inlines
-  everything so `npm run build` gives one file, `dist/index.html`.
+  everything so `npm run build` gives one file, `dist/iiif-cite.html` (source page
+  `src/iiif-cite.html`; dev server at `/iiif-cite.html`).
 - `cite-roi` dependency: `github:neelsmith/cite-roi#v1.0.0` (lock file resolves over https).
   To pick up a new release: tag it in cite-roi, then `npm install github:neelsmith/cite-roi#vX.Y.Z`
   and check `package-lock.json` still says `git+https://` (npm may write `git+ssh://`).
