@@ -153,8 +153,13 @@ http://www.homermultitext.org/iipsrv?IIIF=/…/VA001RN_0002.tif|urn:cite2:hmt:va
   without a collection version matches any version (Neel). `lib/urn-link.ts`.
 - On arrival a query is moved into the hash; once resolved, `urn=` becomes `canvas=`/`roi=`.
   Problems (not CITE2, bad region, no URN map, URN not in the map) are notices.
-- "Copy link" in the canvas view (the image, and each region) copies a link by URN when the
-  canvas has one and the URN map was loaded from a URL; otherwise by canvas id (+ roi=).
+- `urn=` may repeat, one citation each (several regions on one image). With `urn=`, any `roi=` in
+  the link is ignored (Neel: regions in URN links come only from URNs). URNs on different images:
+  the first image opens; regions on the others are kept with them; a note in the side panel
+  says so (the grid's notices are hidden behind the canvas view).
+- "Copy link" in the canvas view (the image, and each region) and "Copy link to all" in the
+  Selections panel (2+ regions: one `urn=` per region) copy links by URN when the canvas has
+  one and the URN map was loaded from a URL; otherwise by canvas id (+ roi=a;b).
   Readable: `:` `/` `@` `,` `;` left unencoded.
 
 

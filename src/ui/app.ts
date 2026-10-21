@@ -11,8 +11,10 @@
  *
  * Links by URN: urn=<CITE2 URN>[@x,y,w,h] (with manifest= and urns=) opens the canvas whose image
  * has that URN in the URN map, with the region selected; a URN without a version matches any
- * version. Links may use ?… (query) or #…; a query is moved into the hash on arrival, and urn=
- * becomes canvas=/roi= once resolved. "Copy link" in the canvas view makes such links.
+ * version. urn= may be repeated, one citation each (several regions on one image). With urn=,
+ * any roi= in the link is ignored: regions come from the URNs. Links may use ?… (query) or #…;
+ * a query is moved into the hash on arrival, and urn= becomes canvas=/roi= once resolved.
+ * "Copy link" / "Copy link to all" in the canvas view make such links.
  */
 import { readHash, withHash } from "../lib/hash.ts";
 import { loadManifest, loadUrnMapUrl, type Fetch } from "../lib/load.ts";
@@ -62,10 +64,14 @@ function queryToHash() {
   const q = new URLSearchParams(location.search);
   const keys = LINK_KEYS.filter((k) => q.has(k));
   if (!keys.length) return;
-  const changes = Object.fromEntries(keys.map((k) => [k, q.get(k)]));
-  for (const k of keys) q.delete(k);
-  const rest = q.toString();
-  history.replaceState(history.state, "", location.pathname + (rest ? `?${rest}` : "") + withHash(location.hash, changes));
+  const h = new URLSearchParams(location.hash.replace(/^#/, ""));
+  for (const k of keys) {
+    h.delete(k);
+    for (const v of q.getAll(k)) h.append(k, v); // urn= may repeat
+    q.delete(k);
+  }
+  const rest = q.toString(), hash = h.toString();
+  history.replaceState(history.state, "", location.pathname + (rest ? `?${rest}` : "") + (hash ? `#${hash}` : ""));
 }
 
 export function startApp(opts: AppOptions): App {
@@ -250,32 +256,53 @@ export function startApp(opts: AppOptions): App {
     resolveUrn();
   }
 
-  /** Problem with the urn= in the link, shown as a notice. */
-  let urnLinkError = "";
+  /** Problems with the urn= in the link, shown as notices. */
+  let urnLinkErrors: string[] = [];
 
   /**
    * urn=… in the link: once the manifest (and URN map) are loaded, open the canvas it names,
    * adding its region to the canvas's selections. Replaces urn= with canvas=/roi=.
    */
   function resolveUrn() {
-    const urn = readHash(location.hash).urn;
-    if (!urn) { if (urnLinkError) { urnLinkError = ""; render(); } return; }
+    const wanted = new URLSearchParams(location.hash.replace(/^#/, "")).getAll("urn").filter((u) => u.trim());
+    if (!wanted.length) { if (urnLinkErrors.length) { urnLinkErrors = []; render(); } return; }
     if (!manifest || loading) return; // manifest failed or still loading: its own notice says so
-    const found = findByUrn(manifest.canvases, urns?.map ?? null, urn);
-    if (!found.ok) {
-      urnLinkError = found.error;
-      history.replaceState(history.state, "", withHash(location.hash, { urn: null }) || location.pathname);
+    // Each urn= is one citation: an image, or a region on it. Group the regions by canvas.
+    const errors: string[] = [];
+    const byCanvas = new Map<number, Roi[]>(); // in link order
+    for (const urn of wanted) {
+      const found = findByUrn(manifest.canvases, urns?.map ?? null, urn);
+      if (!found.ok) { if (!errors.includes(found.error)) errors.push(found.error); continue; }
+      if (!byCanvas.has(found.index)) byCanvas.set(found.index, []);
+      if (found.roi) byCanvas.get(found.index)!.push(found.roi);
+    }
+    const add = (c: CanvasInfo, extra: Roi[]) => {
+      const rois = [...storedRois(c)];
+      for (const r of extra) if (!rois.some((x) => formatRoi(x) === formatRoi(r))) rois.push(r);
+      return rois;
+    };
+    const [first, ...others] = [...byCanvas.keys()];
+    // Regions on further images are kept with those images (badged in the grid).
+    for (const i of others) {
+      const c = manifest.canvases[i];
+      setRois(c, add(c, byCanvas.get(i)!), null);
+    }
+    if (others.length) errors.push(`The link cites ${byCanvas.size} images; showing the first. ` +
+      "Regions on the others are kept with them (numbered in the grid).");
+    urnLinkErrors = errors;
+    if (first === undefined) {
+      history.replaceState(history.state, "", withHash(location.hash, { urn: null, roi: null }) || location.pathname);
       render();
       return;
     }
-    urnLinkError = "";
-    const c = manifest.canvases[found.index];
-    const rois = [...storedRois(c)];
-    if (found.roi && !rois.some((r) => formatRoi(r) === formatRoi(found.roi!))) rois.push(found.roi);
+    const c = manifest.canvases[first];
+    const rois = add(c, byCanvas.get(first)!);
     pushedCanvas = false;
     history.replaceState(history.state, "",
       withHash(location.hash, { urn: null, canvas: c.id, roi: rois.length ? formatRois(rois) : null }));
     render();
+    // The grid's notices are hidden behind the canvas view: repeat them there.
+    if (errors.length) view.setNote(errors.join(" "));
   }
 
   /** The URN map's URL, if it came from one (a local file can't go in a link). */
@@ -285,12 +312,16 @@ export function startApp(opts: AppOptions): App {
    * A link to a canvas (and region): by URN when the canvas has one and the URN map has a URL,
    * otherwise by canvas id (and roi=).
    */
-  function linkFor(c: CanvasInfo, r: Roi | null): { url: string; byUrn: boolean } {
+  function linkFor(c: CanvasInfo, rois: Roi[]): { url: string; byUrn: boolean } {
     const base = location.href.replace(/[?#].*$/, "");
     const urn = urnFor(c);
     const map = urnsUrl();
-    if (urn && map) return { url: linkTo(base, [["manifest", manifestUrl], ["urns", map], ["urn", r ? roiUrn(urn, r) : urn]]), byUrn: true };
-    return { url: linkTo(base, [["manifest", manifestUrl], ["urns", map], ["canvas", c.id], ["roi", r ? formatRoi(r) : null]]), byUrn: false };
+    const head: [string, string | null][] = [["manifest", manifestUrl], ["urns", map]];
+    if (urn && map) {
+      const cites: [string, string][] = rois.length ? rois.map((r) => ["urn", roiUrn(urn, r)]) : [["urn", urn]];
+      return { url: linkTo(base, [...head, ...cites]), byUrn: true };
+    }
+    return { url: linkTo(base, [...head, ["canvas", c.id], ["roi", rois.length ? formatRois(rois) : null]]), byUrn: false };
   }
 
   async function loadM(url: string) {
@@ -357,7 +388,7 @@ export function startApp(opts: AppOptions): App {
     const notices: (Node | string)[] = [];
     if (manifestError) notices.push(manifestError);
     if (urnError) notices.push(`URN map: ${urnError}`);
-    if (urnLinkError) notices.push(urnLinkError);
+    notices.push(...urnLinkErrors);
     if (manifest) {
       notices.push(...manifest.errors);
       const id = readHash(location.hash).canvas;

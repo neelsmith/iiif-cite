@@ -68,7 +68,7 @@ describe("region selection", () => {
     expect($(".selections .sel-img")?.textContent).toBe("View this region");
     // Copy buttons only for x,y,w,h and the URN — no IIIF URL to copy
     expect($$(".selections li .sel-btn").map((b) => b.getAttribute("title"))).toEqual(
-      ["Copy x,y,w,h", "Remove this selection", "Copy CITE2 URN", "Copy a link that opens this region by its URN"]);
+      ["Copy x,y,w,h", "Remove this selection", "Copy CITE2 URN", "Copy a link that opens this region by URN"]);
     expect($(".export-selections")?.textContent).toBe("Export selections (1)");
     expect(($(".export-selections") as HTMLButtonElement).disabled).toBe(false);
   });

@@ -1,0 +1,19 @@
+---
+title: "Browsing IIIF collections"
+---
+
+
+
+## Browse a manifest
+
+Load a IIIF manifest, browse images.
+
+![Lightbox of a loaded manifest](./imgs/lightbox.png)
+
+
+
+## Explore an image
+
+Pan and zoom individual images, optionally identify regions of interest.
+
+![Focus on a single image](./imgs/single-image.png)

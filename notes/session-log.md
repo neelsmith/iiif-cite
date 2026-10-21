@@ -69,3 +69,6 @@
   "Copy link" buttons in `ui/canvas-view.ts`). Version-less URNs match any version (Neel).
   100 tests pass (a copied region link reopens the same canvas and region); build 56 kB.
   Not checked in a real browser this time (jsdom only). Not committed.
+- Found: a link carried only one urn= (repeats: last won; urn= + roi=: roi dropped). Neel chose
+  repeated urn= only (no roi= with URNs). Built: repeated urn=, "Copy link to all", side-panel
+  note for links citing several images. 104 tests pass; build 57 kB. Not committed.

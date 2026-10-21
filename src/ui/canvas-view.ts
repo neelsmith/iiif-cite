@@ -25,7 +25,7 @@ export interface CanvasViewOptions {
   /** The open canvas's image has loaded; its full-resolution size is now known. */
   onImage?: (canvas: CanvasInfo, size: Size) => void;
   /** A link to this canvas (and region): by URN when possible (`byUrn`), else by canvas id. */
-  linkFor?: (canvas: CanvasInfo, roi: Roi | null) => { url: string; byUrn: boolean };
+  linkFor?: (canvas: CanvasInfo, rois: Roi[]) => { url: string; byUrn: boolean };
 }
 
 export interface ShowArgs {
@@ -52,6 +52,8 @@ export class CanvasView {
   private token = 0;
   private current: ShowArgs | null = null;
   private readonly abort = new AbortController();
+  /** A note shown at the top of the info panel until another canvas is opened. */
+  private note = "";
   /** Full-resolution size of the image on show, once known (regions are measured on it). */
   imageSize: Size | null = null;
   /** Resolves when the current canvas has been drawn (or failed). */
@@ -101,7 +103,7 @@ export class CanvasView {
     document.body.classList.add("viewing");
     this.prev.disabled = args.index <= 0;
     this.next.disabled = args.index >= args.count - 1;
-    if (!same) this.roi.set(args.rois ?? []);
+    if (!same) { this.roi.set(args.rois ?? []); this.note = ""; }
     this.renderPanel();
     if (same) return;
     const token = ++this.token;
@@ -154,6 +156,12 @@ export class CanvasView {
     });
   }
 
+  /** Show a note in the info panel of the open canvas (e.g. about the link that opened it). */
+  setNote(text: string): void {
+    this.note = text;
+    this.renderPanel();
+  }
+
   private renderPanel(): void {
     const a = this.current;
     if (!a) return;
@@ -163,9 +171,10 @@ export class CanvasView {
       : el("span", { class: "muted" }, a.haveUrnMap ? "Not in the URN map" : "No URN map loaded");
     const size = this.imageSize ? `${this.imageSize.w} × ${this.imageSize.h} px` : "…";
     this.panel.replaceChildren(
+      ...(this.note ? [el("p", { class: "panel-note", role: "status" }, this.note)] : []),
       el("p", { class: "pos" }, `${a.index + 1} / ${a.count}`),
       el("h2", {}, c.label),
-      ...(this.opts.linkFor ? [this.linkButton(null, "Copy link to this image")] : []),
+      ...(this.opts.linkFor ? [this.linkButton([], "Copy link to this image")] : []),
       el("dl", {},
         ...row("URN", urn),
         ...row("Canvas", el("code", {}, c.id)),
@@ -205,7 +214,7 @@ export class CanvasView {
         btn("×", "Remove this selection", () => this.roi.remove(i), "sel-btn sel-remove"),
         ...(urn ? [el("code", { class: "sel-urn" }, urn), copyBtn(urn, "Copy CITE2 URN")] : []),
         ...(img ? [el("a", { class: "sel-img", href: img, target: "_blank", rel: "noopener" }, "View this region")] : []),
-        ...(this.opts.linkFor ? [this.linkButton(r, "Copy link")] : []));
+        ...(this.opts.linkFor ? [this.linkButton([r], "Copy link")] : []));
       return li;
     });
     const urns = a.urn ? rois.map((r) => roiUrn(a.urn!, r)) : [];
@@ -219,17 +228,20 @@ export class CanvasView {
         ...(urns.length ? [btn("Download", "Save the URNs as a text file", () =>
           download(urns.join("\n") + "\n", `${fileStem(a.canvas.label, "canvas")}-regions.txt`))] : []),
         copyAll(urns.length ? urns : rois.map(formatRoi), urns.length ? "URN" : "x,y,w,h"),
+        ...(this.opts.linkFor && rois.length > 1 ? [this.linkButton(rois, "Copy link to all")] : []),
         btn("Clear all", "Remove every selection on this canvas", () => this.roi.clear()))] : []),
     );
   }
 
-  /** "Copy link" for the open canvas (r = null) or one of its regions. */
-  private linkButton(r: Roi | null, label: string): HTMLButtonElement {
+  /** "Copy link" for the open canvas (no regions), one region, or all of them. */
+  private linkButton(rois: Roi[], label: string): HTMLButtonElement {
     const a = this.current!;
-    const { url, byUrn } = this.opts.linkFor!(a.canvas, r);
-    const title = byUrn ? `Copy a link that opens this ${r ? "region" : "image"} by its URN`
-      : `Copy a link to this ${r ? "region" : "image"} (by canvas id: ${a.urn ? "load the URN map from a URL" : "it has no URN"} for a link by URN)`;
-    const b = el("button", { type: "button", class: r ? "sel-btn sel-link" : "copy-link", title, "data-url": url }, label);
+    const { url, byUrn } = this.opts.linkFor!(a.canvas, rois);
+    const what = rois.length === 0 ? "this image" : rois.length === 1 ? "this region" : "all these regions";
+    const title = byUrn ? `Copy a link that opens ${what} by URN`
+      : `Copy a link to ${what} (by canvas id: ${a.urn ? "load the URN map from a URL" : "it has no URN"} for a link by URN)`;
+    const cls = rois.length === 0 ? "copy-link" : rois.length === 1 ? "sel-btn sel-link" : "sel-btn sel-link-all";
+    const b = el("button", { type: "button", class: cls, title, "data-url": url }, label);
     b.addEventListener("click", () => copyText(url).then((ok) => { b.textContent = ok ? "Copied" : "Copy failed"; }));
     return b;
   }

@@ -78,6 +78,7 @@ body.viewing { overflow: hidden; }
 .info { background: #141418; border-left: 1px solid #2a2a30; padding: 20px 18px; overflow: auto; font-size: 14px; }
 .info h2 { margin: 0 0 12px; font-size: 16px; }
 .info .pos { margin: 0 0 4px; color: #999; font-size: 12px; }
+.info .panel-note { margin: 0 0 14px; padding: 8px 10px; border-radius: 6px; background: #3a3218; color: #f3e2b0; font-size: 13px; }
 .info dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; }
 .info dt { color: #999; }
 .info dd { margin: 0; overflow-wrap: anywhere; }

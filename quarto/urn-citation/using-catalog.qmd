@@ -1,0 +1,22 @@
+---
+title: "Citing images with a URN catalog"
+---
+
+
+
+::: {.callout-caution}
+## Documentation TBA
+:::
+
+
+## Load data
+
+- load a IIIF manifest
+- load a URN map for the collection in the manifest either from a local file, or a source on the internet
+
+## Cite images
+
+URNs for whole images, and for selected regions.
+
+![Regions ID'ed by URN](../imgs/roi-w-urns.png)
+
