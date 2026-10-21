@@ -137,10 +137,10 @@
     "text": "A single-page web app to make IIIF browsing citable."
   },
   {
-    "objectID": "index.html#demo-installation-with-preloaded-manifests",
-    "href": "index.html#demo-installation-with-preloaded-manifests",
+    "objectID": "index.html#examples",
+    "href": "index.html#examples",
     "title": "iiif-cite",
-    "section": "Demo installation with preloaded manifests",
-    "text": "Demo installation with preloaded manifests\n\nIo. Friderici Weidleri Historia Astronomiae (manifest provided by Universität Göttingen)\nVenetus A manuscript (manifest provided by the Homer Multitext project)"
+    "section": "Examples",
+    "text": "Examples\nA working installation: https://neelsmith.github.io/iiif-cite/iiif-cite.html\nWith preloaded manifests:\n\nIo. Friderici Weidleri Historia Astronomiae (manifest provided by Universität Göttingen)\nVenetus A manuscript (manifest provided by the Homer Multitext project)\n\nWith preloaded manifest + URN map for canonical citation:\n\nComplutensian Bible from Spanish National Library, volume 1\n\nA page with multiple URN parameters:\n\nComplutensian Bible, vol. 1, quire a, page 1 recto, Greek, Hebrew and lemmatizing notes indexed with a"
   }
 ]

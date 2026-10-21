@@ -69,7 +69,7 @@ export class CanvasView {
     this.roi = roi = new RoiLayer(this.viewer, (rois) => {
       this.renderSelections();
       if (this.current) this.opts.onRois?.(this.current.canvas, rois, this.imageSize);
-    });
+    }, this.abort.signal);
     this.viewer.controls.append(this.roi.toggle);
     this.message = el("p", { class: "stage-message", role: "status" });
     const btn = (cls: string, text: string, label: string, fn: () => void) => {

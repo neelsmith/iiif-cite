@@ -60,6 +60,7 @@ body.viewing { overflow: hidden; }
   user-select: none; -webkit-user-select: none; }
 .zoom.zoomed { cursor: grab; }
 .zoom.zoomed.dragging { cursor: grabbing; }
+.zoom.shift-draw { cursor: crosshair; } /* Shift held: Shift-drag draws a region */
 .zoom-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
 .zoom-layer[hidden] { display: none; }
 .zoom-base, .zoom-tile { position: absolute; max-width: none; max-height: none; display: block;
