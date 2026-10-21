@@ -32,7 +32,8 @@ website:
         file: urns.qmd
       - text: "Addressable content"
         file: addressable.qmd        
-
+      - text: "Packaging apps"
+        file: packaging.qmd
             
           
 

@@ -1,0 +1,8 @@
+---
+title: Packaging apps
+---
+
+*TBA*
+
+- preconfigure pairs of manifests + URN maps
+- build named app with configured data sets
