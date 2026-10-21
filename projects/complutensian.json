@@ -1,0 +1,11 @@
+{ 
+    "title": "Complutensian Bible (Madrid copy)",
+    "collections": [ 
+        { 
+            "label": "Volume 1", 
+            "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json",
+            "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex" 
+        }
+    ],
+    "default": "Volume 1" 
+}

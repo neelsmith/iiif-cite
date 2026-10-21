@@ -2,7 +2,57 @@
 title: Packaging apps
 ---
 
-*TBA*
+::: {.callout-note}
+## Prerequisites
+You'll need `npm` on your system. The first time you use the package's `npm` commands, you'll need to download all prerequisites by running `npm install` before trying to use of the package's other `npm` commands.
+:::
 
-- preconfigure pairs of manifests + URN maps
-- build named app with configured data sets
+You can easily package a preconfigured app to create an image browsing and citation tool for your project. There are two steps:
+
+1. define pairs of manifests + URN maps in a configuration file
+2. use `npm run package` to create a named app from the configuration file
+
+
+## Configuration
+
+Configure your app in a JSON file that names a title, a list of one or more collections (each comprising a label, manifest source, and urn map source), and a default collection. This is a complete configuration:
+
+```json
+{ 
+    "title": "Complutensian Bible (Madrid copy)",
+    "collections": [ 
+        { 
+            "label": "Volume 1", 
+            "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json",
+            "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex" 
+        }
+    ],
+    "default": "Volume 1" 
+}
+```
+
+## Build
+
+
+
+First build a current version of `iiif-cite.html`
+
+
+```
+cd src
+npm run build
+```
+
+This example builds an app from a JSON file in this repository's `projects` directory (`../projects/complutensian.json` from the perspective of the `src` directory). Use this syntax:
+
+```
+npm run package -- ../projects/complutensian.json        
+```
+
+## Result
+
+The result is `dist/complutensian.html`. Opening it in a browser looks like this:
+
+![A packaged app](./imgs/packaged.png)
+
+In lieu of the text inputs for manifest and URN map, there is a menu of citable manifests, open to the default.
