@@ -37,5 +37,6 @@
   per-canvas Download is a URN list too, offered only when the canvas has a URN.
 - Panel: kept the "View this region" link, dropped the copyable IIIF URL.
 - Phase 4 done: imageviewer now imports cite-roi (see imageviewer/notes/session-log.md, session 29).
-- Neel tested with the HMT Venetus A manifest on his Mac: works.
-- Next: rest of phase 5 (Göttingen; https hosting), commit.
+- Neel tested with the HMT Venetus A and SUB Göttingen manifests on his Mac: both work.
+  Committed and pushed as "Initial working version" (d5e21e4).
+- Open: https hosting (HMT images are http); plan.md "Open questions".

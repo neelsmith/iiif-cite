@@ -101,8 +101,8 @@ full-resolution image, so `cite-roi`'s `screenToFrac`/`roiToScreen` and imagevie
 4. **imageviewer uses cite-roi** — done 2026-10-20: imageviewer's `lib/roi.ts` and its tests
    removed; it imports `cite-roi` v1.0.0. 123 tests pass; its five built pages are
    byte-identical to before. (Logged in imageviewer's notes, session 29.)
-5. **Check against real servers** — HMT Venetus A: works (Neel, 2026-10-20, dev server on the
-   Mac). Still to try: SUB Göttingen; served over https (mixed content with HMT's http images).
+5. **Check against real servers** — HMT Venetus A and SUB Göttingen: work (Neel, 2026-10-20,
+   on the Mac). Still to try: serving over https (mixed content with HMT's http images).
    Originally: — e.g. HMT and a large library, in headless Chromium:
    v2 and v3 manifests, level 0/1/2 services, CORS when opened from `file://`.
 
