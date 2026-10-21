@@ -1,2 +1,4 @@
 # iiif-cite
-Single page web app to make IIIF browsing citable
+
+A single-page web app to make IIIF browsing citable.
+
