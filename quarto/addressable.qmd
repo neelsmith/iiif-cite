@@ -1,0 +1,20 @@
+---
+title: Addressable content
+---
+
+
+
+::: {.callout-note}
+## Documentation TBA
+:::
+
+
+The following content can/should be addressable from HTTP parameters:
+
+- manifest
+- image id
+- rois on image id
+- URN, including with ROI extended reference
+
+
+`manifest=, urns=, canvas=, roi=`

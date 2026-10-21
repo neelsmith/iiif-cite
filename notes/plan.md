@@ -108,7 +108,56 @@ full-resolution image, so `cite-roi`'s `screenToFrac`/`roiToScreen` and imagevie
    Originally: — e.g. HMT and a large library, in headless Chromium:
    v2 and v3 manifests, level 0/1/2 services, CORS when opened from `file://`.
 
-## Open questions
+## Phase 6 — mapping images to URNs (done 2026-10-21)
+
+Neel's decisions: map from the **image service id** (not the canvas id); create maps in the app
+with a **rule plus hand edits**; `.` allowed in object ids; the file holds only the mapping (no
+collection metadata); the label rule is a generic clean-up.
+
+### Map file (`lib/urn-map.ts`)
+
+```
+// URN map for <manifest label>
+// manifest: <manifest URL>
+image|urn|label
+http://www.homermultitext.org/iipsrv?IIIF=/…/VA001RN_0002.tif|urn:cite2:hmt:vaimg.2017a:VA001RN_0002|Venetus A (Marciana 454 = 822), folio 1, recto
+```
+
+- `image` = Image API service id (for a canvas without a service, its image URL). Matched
+  ignoring http/https, a trailing slash and `/info.json` (`imageKey`), so one map works on
+  http and https pages and for any manifest using the same images. One row per image.
+- `label` is for people; ignored when reading. Older `canvas|urn` maps still read; a canvas
+  row wins over an image row. Only canvas rows are checked against the manifest.
+
+### "Map URNs" mode (`lib/urn-rules.ts`, `ui/urn-mapper.ts`, grid in `ui/app.ts`)
+
+- Button "Map URNs" by the manifest title opens a panel over the grid: collection URN
+  (`urn:cite2:ns:coll[.version]:`, checked), object ids from: image file name (extension
+  dropped) · end of canvas id · canvas label · numbers in order (prefix, start, digits) ·
+  pattern (regex on the image id; first group). Generic clean-up keeps A–Z a–z 0–9 . _ -.
+- Each thumbnail shows its draft object id; click to edit: the URN, "number from here"
+  (numbering rule), ✓ / Rule (back to the rule) / ✕; Enter/Esc.
+- Status: canvases · with URNs · without · duplicates (same URN, different images) · invalid ·
+  conflicting (an image repeated on a later canvas but given a different URN; the first wins).
+  An image repeated on several canvases gets its first canvas's URN from the rule.
+- With a URN map loaded: the collection is guessed from it, and "Keep URNs already in the
+  loaded map" (on by default) keeps them; hand edits always win.
+- Download `<manifest>-urns.cex` → also becomes the active URN map (like a local file).
+  Not saved in the browser; Done / loading another manifest / leaving the page ask first if
+  the map changed since the last download.
+
+## Phase 7 — links by URN (done 2026-10-21)
+
+- `?manifest=<url>&urns=<URN map url>&urn=<CITE2 URN>[@x,y,w,h]` (or the same in `#…`) opens the
+  canvas whose image has that URN in the map, with the region added to its selections. A URN
+  without a collection version matches any version (Neel). `lib/urn-link.ts`.
+- On arrival a query is moved into the hash; once resolved, `urn=` becomes `canvas=`/`roi=`.
+  Problems (not CITE2, bad region, no URN map, URN not in the map) are notices.
+- "Copy link" in the canvas view (the image, and each region) copies a link by URN when the
+  canvas has one and the URN map was loaded from a URL; otherwise by canvas id (+ roi=).
+  Readable: `:` `/` `@` `,` `;` left unencoded.
+
+
 
 - URN map: is `canvas|urn` right, or key on the Image API service id instead / as well?
 - Should one URN map cover several manifests (add a `manifest` column)?

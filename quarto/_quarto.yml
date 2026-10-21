@@ -30,6 +30,9 @@ website:
         file: index.qmd   
       - text: "URNs"
         file: urns.qmd
+      - text: "Addressable content"
+        file: addressable.qmd        
+
             
           
 

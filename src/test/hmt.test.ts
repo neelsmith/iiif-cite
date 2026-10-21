@@ -31,7 +31,7 @@ describe("HMT Venetus A", () => {
     expect(map.errors).toEqual([]);
     expect(map.byCanvas.size).toBe(662);
     expect(urnCoverage(m, map).withUrn).toBe(4);
-    const urn = urnForCanvas(map, "canvases/1r")!;
+    const urn = urnForCanvas(map, m.canvases[2])!;
     expect(urn).toBe("urn:cite2:hmt:vaimg.2017a:VA001RN_0002");
     expect(roiUrn(urn, { x: 0.1, y: 0.2, w: 0.3, h: 0.4 })).toBe("urn:cite2:hmt:vaimg.2017a:VA001RN_0002@0.1000,0.2000,0.3000,0.4000");
   });

@@ -54,3 +54,18 @@
   `HttpsUpgradeError` explains (open from a file or http instead). http/file pages unchanged.
   `AppOptions.https` overrides the protocol check (tests). 73 tests pass; build 41 kB.
   CORS on HMT's https endpoint not verifiable from here — Neel to confirm on Pages.
+- Neel confirmed the https fix works on GitHub Pages.
+- Phase 6 designed (plan.md "Phase 6 — mapping images to URNs"): key = image service id;
+  in-app "Map URNs" mode, rule + hand edits, downloads image|urn|label .cex. Not built yet.
+- Neel: `.` OK in object ids; map file holds only the mapping; label rule = generic clean-up.
+- Phase 6 built: URN maps keyed by image service id (`image|urn|label`; `canvas|urn` still read;
+  `urnForCanvas` now takes the canvas), `lib/urn-rules.ts` (rules, drafts, problems, map text),
+  `ui/urn-mapper.ts` + Map URNs mode in the grid (grid items are now `.cell` = tile + URN line).
+  HMT check: the image-file-name rule reproduces the 662-canvas map generated earlier (excerpt).
+  Browser check (synthetic server) found that an image repeated on two canvases got two URNs
+  and the second was silently dropped from the file → now one URN per image, conflicts flagged.
+  90 tests pass; build 53 kB. Not committed.
+- Phase 7 built: links by URN (`lib/urn-link.ts`; `urn=` resolved in `ui/app.ts`; ?query → #hash;
+  "Copy link" buttons in `ui/canvas-view.ts`). Version-less URNs match any version (Neel).
+  100 tests pass (a copied region link reopens the same canvas and region); build 56 kB.
+  Not checked in a real browser this time (jsdom only). Not committed.

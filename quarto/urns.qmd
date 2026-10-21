@@ -5,3 +5,13 @@ title: Identifying images with URNs
 ::: {.callout-note}
 ## Documentation TBA
 :::
+
+
+## Using a URN catalog
+
+![Regions ID'ed by URN](./imgs/roi-w-urns.png)
+
+## Building a URN catalog
+
+
+![Mapping images to URNs](./imgs/map-urns.png)

@@ -8,6 +8,11 @@
  * browser storage, as in imageviewer). The open canvas's regions are in the link as
  * roi=x,y,w,h;x,y,w,h, so a shared link shows them. "Export selections" downloads all of them
  * as one CITE2 URN per line.
+ *
+ * Links by URN: urn=<CITE2 URN>[@x,y,w,h] (with manifest= and urns=) opens the canvas whose image
+ * has that URN in the URN map, with the region selected; a URN without a version matches any
+ * version. Links may use ?… (query) or #…; a query is moved into the hash on arrival, and urn=
+ * becomes canvas=/roi= once resolved. "Copy link" in the canvas view makes such links.
  */
 import { readHash, withHash } from "../lib/hash.ts";
 import { loadManifest, loadUrnMapUrl, type Fetch } from "../lib/load.ts";
@@ -15,12 +20,14 @@ import type { CanvasInfo, ManifestInfo } from "../lib/manifest.ts";
 import type { Size } from "../lib/zoom.ts";
 import { parseUrnMap, urnForCanvas, type UrnMap } from "../lib/urn-map.ts";
 import { thumbCandidates, urnCoverage } from "../lib/canvases.ts";
-import { formatRois, parseRois, type Roi } from "cite-roi";
+import { formatRoi, formatRois, parseRois, roiUrn, type Roi } from "cite-roi";
 import { fileStem, selectionKey, selectionsText, type CanvasSelections } from "../lib/selections.ts";
 import { el } from "./dom.ts";
 import { CanvasView } from "./canvas-view.ts";
 import { download } from "./clipboard.ts";
 import { forPage, httpOrigins, HttpsUpgradeError, manifestForPage } from "../lib/https.ts";
+import { UrnMapper } from "./urn-mapper.ts";
+import { findByUrn, linkTo } from "../lib/urn-link.ts";
 
 export interface AppOptions {
   root: HTMLElement;
@@ -47,7 +54,22 @@ export interface App {
 
 interface UrnSource { map: UrnMap; label: string; fromFile: boolean }
 
+/** Link parameters the app reads from the hash (and accepts in a ?query). */
+const LINK_KEYS = ["manifest", "urns", "urn", "canvas", "roi"];
+
+/** Move link parameters from the query string into the hash (query wins), without reloading. */
+function queryToHash() {
+  const q = new URLSearchParams(location.search);
+  const keys = LINK_KEYS.filter((k) => q.has(k));
+  if (!keys.length) return;
+  const changes = Object.fromEntries(keys.map((k) => [k, q.get(k)]));
+  for (const k of keys) q.delete(k);
+  const rest = q.toString();
+  history.replaceState(history.state, "", location.pathname + (rest ? `?${rest}` : "") + withHash(location.hash, changes));
+}
+
 export function startApp(opts: AppOptions): App {
+  queryToHash();
   const pageIsHttps = opts.https ?? location.protocol === "https:";
   const baseFetch: Fetch = opts.fetch ?? ((u) => fetch(u));
   /** http origins whose URLs (from a manifest) were switched to https for this page. */
@@ -93,6 +115,7 @@ export function startApp(opts: AppOptions): App {
     fetch: fetchFn,
     onStep: (dir) => step(dir),
     onClose: () => close(),
+    linkFor: (c, r) => linkFor(c, r),
     onRois: (c, rois, size) => {
       setRois(c, rois, size);
       // Keep the open canvas's regions in the link without adding history entries.
@@ -103,6 +126,30 @@ export function startApp(opts: AppOptions): App {
       if (e) e.imageSize = size;
     },
   });
+  // ---- Map URNs mode (grid): draft a URN map with a rule + hand edits, download it.
+  let mapping = false;
+  const mapper = new UrnMapper({
+    onChange: () => refreshUrnCells(),
+    onDownload: (text, name) => {
+      download(text, name);
+      // The downloaded map becomes the active URN map (like loading it from a file).
+      urns = { map: parseUrnMap(text), label: name, fromFile: true };
+      urnError = "";
+      if (readHash(location.hash).urns) history.replaceState(history.state, "", withHash(location.hash, { urns: null }));
+      mapper.setExisting(urns.map);
+      render();
+    },
+    onDone: () => setMapping(false),
+  });
+  function setMapping(on: boolean) {
+    if (on && manifest) mapper.open(manifest.canvases, urns?.map ?? null, manifest.label || manifest.id, manifestUrl);
+    if (!on && mapper.dirty && !confirm("Leave without downloading the URN map? Your changes will be lost.")) return;
+    if (!on) mapper.dirty = false;
+    mapping = on && !!manifest;
+    render();
+  }
+  window.addEventListener("beforeunload", (e) => { if (mapping && mapper.dirty) e.preventDefault(); });
+
   /** Selections this session, keyed by manifest URL + canvas id. */
   const store = new Map<string, CanvasSelections>();
   /** Grid tiles of the current manifest, by canvas id (for the selection-count badges). */
@@ -113,6 +160,7 @@ export function startApp(opts: AppOptions): App {
 
   manifestForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (mapping && mapper.dirty && !confirm("Load another manifest without downloading the URN map? Your changes will be lost.")) return;
     pushedCanvas = false;
     setHash({ manifest: manifestInput.value.trim(), canvas: null });
   });
@@ -199,10 +247,55 @@ export function startApp(opts: AppOptions): App {
     }
     render();
     await Promise.all(jobs);
+    resolveUrn();
+  }
+
+  /** Problem with the urn= in the link, shown as a notice. */
+  let urnLinkError = "";
+
+  /**
+   * urn=… in the link: once the manifest (and URN map) are loaded, open the canvas it names,
+   * adding its region to the canvas's selections. Replaces urn= with canvas=/roi=.
+   */
+  function resolveUrn() {
+    const urn = readHash(location.hash).urn;
+    if (!urn) { if (urnLinkError) { urnLinkError = ""; render(); } return; }
+    if (!manifest || loading) return; // manifest failed or still loading: its own notice says so
+    const found = findByUrn(manifest.canvases, urns?.map ?? null, urn);
+    if (!found.ok) {
+      urnLinkError = found.error;
+      history.replaceState(history.state, "", withHash(location.hash, { urn: null }) || location.pathname);
+      render();
+      return;
+    }
+    urnLinkError = "";
+    const c = manifest.canvases[found.index];
+    const rois = [...storedRois(c)];
+    if (found.roi && !rois.some((r) => formatRoi(r) === formatRoi(found.roi!))) rois.push(found.roi);
+    pushedCanvas = false;
+    history.replaceState(history.state, "",
+      withHash(location.hash, { urn: null, canvas: c.id, roi: rois.length ? formatRois(rois) : null }));
+    render();
+  }
+
+  /** The URN map's URL, if it came from one (a local file can't go in a link). */
+  const urnsUrl = () => (urns && !urns.fromFile ? urns.label : null);
+
+  /**
+   * A link to a canvas (and region): by URN when the canvas has one and the URN map has a URL,
+   * otherwise by canvas id (and roi=).
+   */
+  function linkFor(c: CanvasInfo, r: Roi | null): { url: string; byUrn: boolean } {
+    const base = location.href.replace(/[?#].*$/, "");
+    const urn = urnFor(c);
+    const map = urnsUrl();
+    if (urn && map) return { url: linkTo(base, [["manifest", manifestUrl], ["urns", map], ["urn", r ? roiUrn(urn, r) : urn]]), byUrn: true };
+    return { url: linkTo(base, [["manifest", manifestUrl], ["urns", map], ["canvas", c.id], ["roi", r ? formatRoi(r) : null]]), byUrn: false };
   }
 
   async function loadM(url: string) {
     manifest = null; manifestError = ""; manifestUrl = url;
+    mapping = false; mapper.dirty = false;
     if (!url) return;
     loading = true; render();
     try {
@@ -264,6 +357,7 @@ export function startApp(opts: AppOptions): App {
     const notices: (Node | string)[] = [];
     if (manifestError) notices.push(manifestError);
     if (urnError) notices.push(`URN map: ${urnError}`);
+    if (urnLinkError) notices.push(urnLinkError);
     if (manifest) {
       notices.push(...manifest.errors);
       const id = readHash(location.hash).canvas;
@@ -286,12 +380,20 @@ export function startApp(opts: AppOptions): App {
     if (!manifest) return out;
 
     const cov = urns ? urnCoverage(manifest, urns.map) : null;
+    const mapBtn = el("button", { type: "button", class: "map-urns", "aria-pressed": String(mapping),
+      title: "Give the images in this manifest CITE2 URNs and download the URN map" }, "Map URNs");
+    mapBtn.addEventListener("click", () => setMapping(!mapping));
     out.push(el("div", { class: "manifest-head" },
       el("h2", {}, manifest.label || manifest.id),
       el("span", { class: "count" },
         `${manifest.canvases.length} canvases`,
-        cov ? ` · ${cov.withUrn} with URNs (${urns!.label}${urns!.fromFile ? ", local file — not in the link" : ""})` : "")));
-    out.push(grid());
+        cov ? ` · ${cov.withUrn} with URNs (${urns!.label}${urns!.fromFile ? ", local file — not in the link" : ""})` : ""),
+      mapBtn));
+    if (mapping) out.push(mapper.el);
+    const g = grid();
+    g.classList.toggle("mapping", mapping);
+    out.push(g);
+    if (mapping) refreshUrnCells();
     return out;
   }
 
@@ -300,6 +402,7 @@ export function startApp(opts: AppOptions): App {
   function grid(): HTMLElement {
     if (gridFor && gridFor.manifest === manifest && gridFor.urns === urns) return gridFor.el;
     tiles = new Map();
+    cells = new Map();
     const g = el("div", { class: "grid" }, ...manifest!.canvases.map(tile));
     for (const c of manifest!.canvases) updateBadge(c.id);
     gridFor = { manifest: manifest!, urns, el: g };
@@ -325,10 +428,68 @@ export function startApp(opts: AppOptions): App {
       setHash(canvasHash(c));
     });
     tiles.set(c.id, b);
-    return b;
+    // The draft URN under the thumbnail (shown in Map URNs mode); click to edit.
+    const urnLine = el("button", { type: "button", class: "tile-urn", title: "Change this URN" });
+    urnLine.addEventListener("click", () => editUrn(c, cell));
+    const cell = el("div", { class: "cell" }, b, urnLine);
+    cells.set(c.id, cell);
+    return cell;
   }
 
-  function urnFor(c: CanvasInfo) { return urnForCanvas(urns?.map ?? null, c.id); }
+  /** Grid cells (thumbnail + URN line) by canvas id. */
+  let cells = new Map<string, HTMLElement>();
+
+  /** Show the mapper's draft URN under each thumbnail. */
+  function refreshUrnCells() {
+    if (!manifest || !mapping) return;
+    manifest.canvases.forEach((c, i) => {
+      const cell = cells.get(c.id);
+      const line = cell?.querySelector<HTMLElement>(".tile-urn");
+      const d = mapper.drafts[i];
+      if (!line || !d || cell!.querySelector(".urn-edit")) return;
+      const id = d.urn ? d.urn.slice(d.urn.lastIndexOf(":") + 1) : "";
+      line.textContent = d.urn ? id : "no URN";
+      line.title = d.urn ? `${d.urn}${d.from === "hand" ? " (set by hand)" : d.from === "map" ? " (from the loaded map)" : ""} — click to change` : "Click to give this image a URN";
+      line.className = `tile-urn${d.problem ? ` ${d.problem}` : ""}${d.from !== "rule" ? ` ${d.from}` : ""}`;
+    });
+  }
+
+  /** Inline editor under a thumbnail: the URN, and (numbering rule) where counting restarts. */
+  function editUrn(c: CanvasInfo, cell: HTMLElement) {
+    if (!manifest) return;
+    const i = manifest.canvases.indexOf(c);
+    const d = mapper.drafts[i];
+    const input = el("input", { type: "text", name: "urn", value: d?.urn ?? mapper.rule.collection, spellcheck: "false", "aria-label": `URN for ${c.label}` });
+    const count = mapper.rule.kind === "number"
+      ? el("input", { type: "number", name: "count", value: d?.n ?? mapper.rule.start, title: "Number this image (later ones follow on)", "aria-label": "Number from here" })
+      : null;
+    const btn = (label: string, title: string, fn: () => void) => {
+      const b = el("button", { type: "button", title }, label);
+      b.addEventListener("click", fn);
+      return b;
+    };
+    const close = () => { box.remove(); refreshUrnCells(); };
+    const save = () => {
+      const counted = count ? Number(count.value) : null;
+      if (count && counted !== d?.n) mapper.restartAt(c.id, counted);
+      if (input.value.trim() !== (d?.urn ?? "")) mapper.setHand(c.id, input.value.trim());
+      close();
+    };
+    const box = el("div", { class: "urn-edit" }, input,
+      ...(count ? [el("label", {}, "number from here ", count)] : []),
+      btn("✓", "Save (Enter)", save),
+      btn("Rule", "Use the rule for this image again", () => { mapper.setHand(c.id, null); mapper.restartAt(c.id, null); close(); }),
+      btn("✕", "Cancel (Esc)", close));
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); save(); }
+      else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); close(); }
+    });
+    cell.append(box);
+    input.focus();
+    input.select();
+  }
+
+  function urnFor(c: CanvasInfo) { return urnForCanvas(urns?.map ?? null, c); }
 
   const app: App = {
     get manifest() { return manifest; },

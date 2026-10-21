@@ -117,11 +117,53 @@ body.viewing { overflow: hidden; }
 .selections li.current .sel-num { background: #4cc3ff; }
 .selections code { font: 12px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; color: #ddd; overflow-wrap: anywhere; }
 .selections .sel-urn { grid-column: 2 / 4; }
-.selections .sel-img { grid-column: 2 / -1; }
 .selections .sel-urn { color: #adbcff; }
-.selections .sel-img { font-size: 12px; }
+.selections .sel-img { font-size: 12px; grid-column: 2 / 4; }
+.selections .sel-link { grid-column: 4; }
+.lightbox .info .copy-link { position: static; width: auto; height: auto; font-size: 12px; line-height: 1.2;
+  padding: 3px 10px; border-radius: 6px; margin: -4px 0 14px; }
 .lightbox .selections button { position: static; width: auto; height: auto; font-size: 12px; line-height: 1.2;
   padding: 3px 8px; border-radius: 6px; }
 .lightbox .selections .sel-num { background: #ffd23f; color: #111; font-weight: 600; min-width: 24px; }
 .sel-hint { color: #999; font-size: 13px; margin: 0 0 6px; }
 .sel-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+
+/* ---- Map URNs mode */
+.cell { display: flex; flex-direction: column; min-width: 0; position: relative; }
+.manifest-head .map-urns { margin-left: auto; padding: 4px 12px; font: inherit; font-size: 13px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--panel); color: inherit; cursor: pointer; }
+.manifest-head .map-urns[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.mapper { margin: 4px 0 14px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
+  display: grid; gap: 8px; font-size: 14px; }
+.map-head { display: flex; align-items: center; }
+.map-head h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.map-head .map-done { margin-left: auto; }
+.map-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.mapper input[type=text], .mapper input[type=number], .mapper select { font: inherit; font-size: 13px; padding: 4px 8px;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; }
+.mapper input[name=collection] { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; max-width: 100%; }
+.map-fields { display: inline-flex; flex-wrap: wrap; gap: 6px 10px; }
+.map-msg { color: #b26b00; font-size: 13px; }
+.map-status { margin: 0; color: var(--muted); }
+.map-status.warn { color: #b26b00; }
+.map-hint { margin: 0; color: var(--muted); font-size: 13px; }
+.mapper button, .urn-edit button { font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: none; color: inherit; }
+.mapper .map-download { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
+.mapper .map-download:disabled { opacity: .45; cursor: default; }
+.tile-urn { display: none; }
+.grid.mapping .tile-urn { display: block; margin: 2px 0 0; padding: 1px 4px; border: 1px solid transparent; border-radius: 4px;
+  background: none; color: var(--accent); font: 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: left;
+  cursor: text; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.grid.mapping .tile-urn:hover { border-color: var(--line); }
+.grid.mapping .tile-urn.none { color: var(--muted); font-style: italic; }
+.grid.mapping .tile-urn.duplicate, .grid.mapping .tile-urn.invalid, .grid.mapping .tile-urn.conflict { color: #c0392b; background: var(--warn); }
+.grid.mapping .tile-urn.hand::after { content: " ✎"; color: var(--muted); }
+.grid.mapping .tile-urn.map::after { content: " ·"; color: var(--muted); }
+.urn-edit { position: absolute; left: 0; right: -60px; top: calc(100% - 22px); z-index: 20; display: flex; flex-wrap: wrap; gap: 4px;
+  padding: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+.urn-edit input[name=urn] { flex: 1 1 100%; min-width: 0; font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; padding: 4px 6px;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; }
+.urn-edit label { font-size: 12px; display: flex; align-items: center; gap: 4px; }
+.urn-edit input[name=count] { width: 5em; font: inherit; padding: 2px 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; }
+.urn-edit button { padding: 2px 8px; font-size: 12px; }
