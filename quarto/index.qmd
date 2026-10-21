@@ -5,18 +5,16 @@ title: "`iiif-cite`"
 
 A single-page web app to make IIIF browsing citable.
 
-Demos:
 
-- [*Io. Friderici Weidleri Historia Astronomiae*](./iiif-cite.html#manifest=https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest) (manifest from [Universität Göttingen](https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest))
-- [Venetus A manuscript](./iiif-cite.html#manifest=https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json) (manifest from [Homer Multitext project](https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json))
+- use `iiif-cite` to [browse IIIF image collections](./iiif.qmd)
+- use URN maps to [work with citable images](./urns.qmd)
+- [compose URLs](./addressable.qmd) refering directly to collections, images and parts of images
+
+
+## Demo installation with preloaded manifests
+
+- [*Io. Friderici Weidleri Historia Astronomiae*](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest) (manifest provided by [Universität Göttingen](https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest))
+- [Venetus A manuscript](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json) (manifest provided by the [Homer Multitext project](https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json))
 
 
 
-Other manifests to try: the Complutensian Bible, volumes:
-
-    1. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json
-    2. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v2-manifest.json
-    3. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v3-manifest.json
-    4. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v4-manifest.json
-    5. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v5-manifest.json
-    6. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v6-manifest.json

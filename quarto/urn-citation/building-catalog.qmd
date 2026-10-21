@@ -1,0 +1,31 @@
+---
+title: "Building a URN catalog for an IIIF collection"
+---
+
+
+
+::: {.callout-caution}
+## Documentation TBA
+:::
+
+
+## Map image IDs to URNs
+
+![Choose "Map URNs", and provide a collection URN](../imgs/map-urns.png)
+
+
+
+## Save the map as a delimited-text file
+
+Choose "Download map". The resulting text file will look like this.
+
+![Downloaded map](../imgs/step3.png)
+
+
+
+## Use the new URN map
+
+Add the local file as the URN map, or post it to the web and add and add it from a URL. Now when you cite regions of interest, they are expressed as URNs.
+
+
+![Citation by URN](../imgs/step4.png)

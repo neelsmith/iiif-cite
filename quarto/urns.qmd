@@ -6,12 +6,6 @@ title: Identifying images with URNs
 ## Documentation TBA
 :::
 
+- [using a URN catalog](./urn-citation/using-catalog.qmd) to work with citable images
+- [building a URN catalog](./urn-citation/building-catalog.qmd)
 
-## Using a URN catalog
-
-![Regions ID'ed by URN](./imgs/roi-w-urns.png)
-
-## Building a URN catalog
-
-
-![Mapping images to URNs](./imgs/map-urns.png)

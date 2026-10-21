@@ -93,8 +93,8 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">Home</span></a>
+    <a class="nav-link" href="./iiif.html"> 
+<span class="menu-text">IIIF browsing</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./urns.html"> 
@@ -134,8 +134,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#demo-installation-with-preloaded-manifests" id="toc-demo-installation-with-preloaded-manifests" class="nav-link active" data-scroll-target="#demo-installation-with-preloaded-manifests">Demo installation with preloaded manifests</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -166,20 +172,20 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>A single-page web app to make IIIF browsing citable.</p>
-<p>Demos:</p>
 <ul>
-<li><a href="./iiif-cite.html#manifest=https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest"><em>Io. Friderici Weidleri Historia Astronomiae</em></a> (manifest from <a href="https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest">Universität Göttingen</a>)</li>
-<li><a href="./iiif-cite.html#manifest=https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json">Venetus A manuscript</a> (manifest from <a href="https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json">Homer Multitext project</a>)</li>
+<li>use <code>iiif-cite</code> to <a href="./iiif.html">browse IIIF image collections</a></li>
+<li>use URN maps to <a href="./urns.html">work with citable images</a></li>
+<li><a href="./addressable.html">compose URLs</a> refering directly to collections, images and parts of images</li>
 </ul>
-<p>Other manifests to try: the Complutensian Bible, volumes:</p>
-<pre><code>1. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json
-2. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v2-manifest.json
-3. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v3-manifest.json
-4. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v4-manifest.json
-5. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v5-manifest.json
-6. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v6-manifest.json</code></pre>
+<section id="demo-installation-with-preloaded-manifests" class="level2">
+<h2 class="anchored" data-anchor-id="demo-installation-with-preloaded-manifests">Demo installation with preloaded manifests</h2>
+<ul>
+<li><a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest"><em>Io. Friderici Weidleri Historia Astronomiae</em></a> (manifest provided by <a href="https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest">Universität Göttingen</a>)</li>
+<li><a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json">Venetus A manuscript</a> (manifest provided by the <a href="https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json">Homer Multitext project</a>)</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -589,7 +595,7 @@ ul.task-list li input[type="checkbox"] {
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p><code>iiif-cite</code> version <strong>0.1.0</strong>, website last updated October 21, 2026</p>
+<p><code>iiif-cite</code> version <strong>0.1.1</strong>, website last updated October 21, 2026</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;

@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: quarto_build
 
-version: "0.1.0"
+version: "0.1.1"
 metadata:
   date: today
   
@@ -26,8 +26,8 @@ website:
     background: primary
     search: true
     left:
-      - text: "Home"
-        file: index.qmd   
+      - text: "IIIF browsing" 
+        file: iiif.qmd
       - text: "URNs"
         file: urns.qmd
       - text: "Addressable content"
@@ -44,3 +44,12 @@ website:
           - text: "Neel Smith: other hobby projects"
             href: https://neelsmith.github.io/avocational/
         aria-label: Home 
+
+
+  sidebar:
+    - title: "URN citation"
+      contents:
+        - urns.qmd
+        - "---"
+        - urn-citation/using-catalog.qmd
+        - urn-citation/building-catalog.qmd

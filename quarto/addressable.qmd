@@ -4,17 +4,29 @@ title: Addressable content
 
 
 
-::: {.callout-note}
-## Documentation TBA
+::: {.callout-caution}
+## Documentation in progress
+
+This page is incomplete but should provide enough examples to get you started. The live links below are to the example installation at [https://neelsmith.github.io/iiif-cite/iiif-cite.html](https://neelsmith.github.io/iiif-cite/iiif-cite.html), but you can replicate them just by opening a local copy of `iif-cite.html` in a web browser. The examples use:
+
+- this IIIF manifest: [https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json](https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json) 
+- this URN map: [https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex](https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex)
 :::
 
 
-The following content can/should be addressable from HTTP parameters:
+## Addressing raw IIIF manifest data
 
-- manifest
-- image id
-- rois on image id
-- URN, including with ROI extended reference
+- Start from the address of a **ready-to-use installation** of `iiif-cite.html` (e.g. `https://neelsmith.github.io/iiif-cite/iiif-cite.html`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html))
+- To add a **IIIF manifest**, append `#manifest=` (e.g., `#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json))
+- To add a **canvas id** for a selected image, append `&canvas=` (e.g. `&canvas=canvases/vol1_%2B_1r`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&canvas=canvases/vol1_%2B_1r))
+- To add a **region of interest**, append `&roi=` (e.g. `&roi=0.3009,0.0101,0.2744,0.0586`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&canvas=canvases/vol1_%2B_1r&roi=0.3009,0.0101,0.2744,0.0586)). Multiple RoI values may provided, separated by semicolons. (e.g. `&roi=0.1857,0.1178,0.5239,0.0940;0.1733,0.5565,0.5414,0.1967`, [live link](neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&canvas=canvases/vol1_%2B_1r&roi=0.1857,0.1178,0.5239,0.0940;0.1733,0.5565,0.5414,0.1967))
 
 
-`manifest=, urns=, canvas=, roi=`
+
+## Addressing citable image data
+
+- Start from the address of a **ready-to-use installation** of `iiif-cite.html`  (e.g. `https://neelsmith.github.io/iiif-cite/iiif-cite.html`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html))
+- Add a manifest with `#manifest=` *and* a URN map with `urns=` (e.g., `manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex))
+- Append references to images with one or more additions of `&urn=` (e.g.`urn=urn:cite2:citebne:complutensian1.v1:v1p5@0.1857,0.1178,0.5239,0.0940`, [live link](
+https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex&urn=urn:cite2:citebne:complutensian1.v1:v1p5@0.1857,0.1178,0.5239,0.0940)) 
+

@@ -1,6 +1,8 @@
 # Release notes
 
-Current release: **0.1.0**
+Current release: **0.1.1**
+
+**0.1.1**, *Oct. 21, 2026*: fixes a bug in addressing image URNs with multiple ROIs.
 
 
 **0.1.0**, *Oct. 21, 2026*: initial release. 
