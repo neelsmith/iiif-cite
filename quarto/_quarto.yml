@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: quarto_build
 
-version: "0.1.1"
+version: "0.2.0"
 metadata:
   date: today
   
@@ -32,7 +32,8 @@ website:
         file: urns.qmd
       - text: "Addressable content"
         file: addressable.qmd        
-
+      - text: "Packaging apps"
+        file: packaging.qmd
             
           
 

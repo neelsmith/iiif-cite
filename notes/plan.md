@@ -162,10 +162,30 @@ http://www.homermultitext.org/iipsrv?IIIF=/…/VA001RN_0002.tif|urn:cite2:hmt:va
   one and the URN map was loaded from a URL; otherwise by canvas id (+ roi=a;b).
   Readable: `:` `/` `@` `,` `;` left unencoded.
 
+## Phase 8 — packaged project pages (done 2026-10-21)
 
+Neel chose option 3: a configuration stamped into the built page; full links for citations;
+no free-form manifest / URN-map inputs on packaged pages.
 
-- URN map: is `canvas|urn` right, or key on the Image API service id instead / as well?
-- Should one URN map cover several manifests (add a `manifest` column)?
+- `iiif-cite.html` has an empty `<script type="application/json" id="iiif-cite-config">`.
+  `npm run build && npm run package -- projects/<name>.json [-o out.html]` → `dist/<name>.html`
+  (`scripts/package.mjs`): config checked, put in the block (`</` escaped), `<title>` set. The
+  app code is untouched, so the result is still one self-contained file; packaging an already
+  packaged page replaces its config. Usage in `development.md` "Packaging a project page".
+- Config (`lib/project-config.mjs`, plain JS + JSDoc so Node and the app share it):
+  `{ "title", "collections": [{ "label", "manifest", "urns"? }], "default"? }` (default = a
+  label or index; first if omitted). Example: `src/projects/example.json`.
+- Packaged page: title in the bar and tab; a collection menu instead of the manifest/URN-map
+  inputs and File…; opens the default collection; a link naming a project manifest without
+  `urns=` gets that collection's map; a manifest from outside the project still opens, shown
+  as "Other: …". Copy link still makes full links (manifest + urns + urn) — on this page's
+  address, but they work on any iiif-cite. A broken config: notice + the generic app.
+
+## Open questions
+
+- (Resolved, phase 6) URN maps are keyed by the Image API service id (`image|urn|label`);
+  `canvas|urn` maps are still read.
+- (Resolved, phase 6) One URN map can serve several manifests: image ids are matched, not canvases.
 - Export also as W3C/IIIF annotations (an AnnotationPage per canvas)?
 - (Resolved 2026-10-21) HMT over https: yes. On an https page iiif-cite now requests every http
   URL over https (`lib/https.ts`); a server with no https gets an explanatory error.

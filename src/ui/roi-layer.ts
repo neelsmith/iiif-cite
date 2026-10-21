@@ -11,6 +11,7 @@ const HANDLES: Handle[] = ["nw", "ne", "sw", "se"];
  * part of the photo. In select mode (the "Select" button, or Shift-drag at any time) a
  * drag draws a new box; in select mode a box can be clicked to make it current, dragged
  * to move it, or resized by its corner handles; Delete removes the current one.
+ * While Shift is held (and through a Shift-drag) the photo shows a crosshair cursor.
  */
 export class RoiLayer {
   readonly el: HTMLDivElement;
@@ -18,8 +19,11 @@ export class RoiLayer {
   private rois: Roi[] = [];
   private current = -1;
   private selecting = false;
+  private shiftHeld = false;
+  private shiftDrawing = false;
 
-  constructor(private readonly viewer: TileViewer, private readonly onChange: (rois: Roi[], current: number) => void) {
+  constructor(private readonly viewer: TileViewer, private readonly onChange: (rois: Roi[], current: number) => void,
+    signal?: AbortSignal) {
     this.el = document.createElement("div");
     this.el.className = "roi-layer";
     this.toggle = document.createElement("button");
@@ -39,6 +43,11 @@ export class RoiLayer {
       const [px, py] = this.viewer.localPoint(e);
       this.viewer.zoomBy(wheelFactor(e.deltaY, e.deltaMode, e.ctrlKey), px, py);
     }, { passive: false });
+    // Crosshair while Shift is held, so Shift-drag shows it will draw rather than pan.
+    window.addEventListener("keydown", (e) => { if (e.key === "Shift") this.setShift(true); }, { signal });
+    window.addEventListener("keyup", (e) => { if (e.key === "Shift") this.setShift(false); }, { signal });
+    window.addEventListener("blur", () => this.setShift(false), { signal });
+    viewer.el.addEventListener("pointermove", (e) => this.setShift(e.shiftKey)); // Shift pressed while unfocused
   }
 
   get list(): Roi[] { return this.rois.map((r) => ({ ...r })); }
@@ -84,6 +93,16 @@ export class RoiLayer {
 
   private changed() { this.onChange(this.list, this.current); }
 
+  private setShift(on: boolean) {
+    if (on === this.shiftHeld) return;
+    this.shiftHeld = on;
+    this.updateCursor();
+  }
+
+  private updateCursor() {
+    this.viewer.el.classList.toggle("shift-draw", (this.shiftHeld && !!this.viewer.state) || this.shiftDrawing);
+  }
+
   /** Position the boxes for the current zoom/pan. */
   render(): void {
     const st = this.viewer.state;
@@ -120,6 +139,7 @@ export class RoiLayer {
     if (!this.viewer.state || (e.pointerType === "mouse" && e.button !== 0)) return;
     e.preventDefault();
     e.stopPropagation();
+    if (shift) { this.shiftDrawing = true; this.updateCursor(); } // keep the crosshair if Shift is let go mid-drag
     const t = e.target as HTMLElement;
     const start = this.frac(e);
     const i = Number(t.dataset?.i ?? -1);
@@ -146,6 +166,7 @@ export class RoiLayer {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
       window.removeEventListener("pointercancel", up);
+      if (shift) { this.shiftDrawing = false; this.updateCursor(); }
       this.render();
       this.changed();
     };
