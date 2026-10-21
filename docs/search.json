@@ -1,5 +1,33 @@
 [
   {
+    "objectID": "addressable.html",
+    "href": "addressable.html",
+    "title": "Addressable content",
+    "section": "",
+    "text": "NoteDocumentation TBA\n\n\n\n\n\n\nThe following content can/should be addressable from HTTP parameters:\n\nmanifest\nimage id\nrois on image id\nURN, including with ROI extended reference\n\nmanifest=, urns=, canvas=, roi="
+  },
+  {
+    "objectID": "urns.html",
+    "href": "urns.html",
+    "title": "Identifying images with URNs",
+    "section": "",
+    "text": "NoteDocumentation TBA"
+  },
+  {
+    "objectID": "urns.html#using-a-urn-catalog",
+    "href": "urns.html#using-a-urn-catalog",
+    "title": "Identifying images with URNs",
+    "section": "Using a URN catalog",
+    "text": "Using a URN catalog\n\n\n\nRegions ID’ed by URN"
+  },
+  {
+    "objectID": "urns.html#building-a-urn-catalog",
+    "href": "urns.html#building-a-urn-catalog",
+    "title": "Identifying images with URNs",
+    "section": "Building a URN catalog",
+    "text": "Building a URN catalog\n\n\n\nMapping images to URNs"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "iiif-cite",
