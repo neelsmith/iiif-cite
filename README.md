@@ -3,23 +3,35 @@
 A single-page web app to make IIIF browsing citable.
 
 
-- [documentation](https://neelsmith.github.io/iiif-cite/) *TBA*
-- installation of [pre-1.0 version](https://neelsmith.github.io/iiif-cite/iiif-cite.html)
+- [documentation](https://neelsmith.github.io/iiif-cite/) 
+-  example installation of [current version](https://neelsmith.github.io/iiif-cite/iiif-cite.html) hosted on github pages
 
 
-## Some example manifests
 
-Loaded with `manifest` parameter to working installation:
+## Browse IIIF manifests
 
-- [*Io. Friderici Weidleri Historia Astronomiae*](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https%3A%2F%2Fmanifests.sub.uni-goettingen.de%2Fiiif%2Fpresentation%2FPPN623133725%2Fmanifest) (manifest from [Universität Göttingen](https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest))
-- The [Venetus A manuscript](./iiif-cite.html#manifest=https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json) of the *Iliad* (manifest from [Homer Multitext project](https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json))
+![](./quarto/imgs/lightbox.png)
+
+## Cite with URNs
+
+Configure for URN citation and define regions of interest:
+
+![](./quarto/imgs/roi-w-urns.png)
+
+## Live examples
 
 
-Other manifests to try: the Complutensian Bible, volumes:
+A working installation:  [https://neelsmith.github.io/iiif-cite/iiif-cite.html](https://neelsmith.github.io/iiif-cite/iiif-cite.html)
 
-1. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json
-2. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v2-manifest.json
-3. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v3-manifest.json
-4. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v4-manifest.json
-5. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v5-manifest.json
-6. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v6-manifest.json
+With preloaded manifests:
+
+- [*Io. Friderici Weidleri Historia Astronomiae*](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest) (manifest provided by [Universität Göttingen](https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest))
+- [Venetus A manuscript](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json) (manifest provided by the [Homer Multitext project](https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json))
+
+With preloaded manifest + URN map for canonical citation:
+
+- [Complutensian Bible from Spanish National Library, volume 1](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex)
+
+Direct link to a page with multiple URN parameters:
+
+- Complutensian Bible, vol. 1, [quire a, page 1 recto, Greek, Hebrew and lemmatizing notes](https://neelsmith.github.io/iiif-cite/iiif-cite.html?manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex&urn=urn:cite2:citebne:complutensian1.v1:v1p19@0.8467,0.0834,0.0431,0.0170&urn=urn:cite2:citebne:complutensian1.v1:v1p19@0.6861,0.0699,0.1059,0.0215&urn=urn:cite2:citebne:complutensian1.v1:v1p19@0.3869,0.0679,0.0597,0.0140) indexed with `a`
