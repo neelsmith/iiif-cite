@@ -7,6 +7,7 @@ import { parseUrnMap, type UrnMap } from "./urn-map.ts";
 import type { ImageService } from "./manifest.ts";
 import { infoUrl } from "./image-api.ts";
 import { parseImageInfo, type ImageInfo } from "./tiles.ts";
+import { HttpsUpgradeError } from "./https.ts";
 
 export type Fetch = (url: string) => Promise<Response>;
 
@@ -14,7 +15,8 @@ async function get(url: string, fetchFn: Fetch): Promise<Response> {
   let res: Response;
   try {
     res = await fetchFn(url);
-  } catch {
+  } catch (err) {
+    if (err instanceof HttpsUpgradeError) throw err;
     // fetch() rejects with an opaque TypeError for DNS, offline and CORS failures alike.
     throw new Error(`Could not reach ${url} (network error, or the server does not allow cross-origin requests)`);
   }

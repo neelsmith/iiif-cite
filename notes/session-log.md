@@ -46,3 +46,11 @@
 - Build output renamed `dist/index.html` → `dist/iiif-cite.html` (Neel; the Quarto site links
   `./iiif-cite.html`): `git mv src/index.html src/iiif-cite.html`, `rollupOptions.input` in
   vite.config.ts. Dev server page is now `/iiif-cite.html` (nothing at "/").
+- On GitHub Pages (https) thumbnails showed but every canvas failed: fetching HMT's http
+  `info.json` from an https page is blocked (images are silently upgraded, fetches are not).
+  HMT's iipsrv answers on https (info.json's own @id is https). New `lib/https.ts`: on an https
+  page, manifest/URN-map/info.json fetches and all manifest image URLs (services, images,
+  thumbnails → tiles, base, region links) use https; if an upgraded server doesn't answer,
+  `HttpsUpgradeError` explains (open from a file or http instead). http/file pages unchanged.
+  `AppOptions.https` overrides the protocol check (tests). 73 tests pass; build 41 kB.
+  CORS on HMT's https endpoint not verifiable from here — Neel to confirm on Pages.

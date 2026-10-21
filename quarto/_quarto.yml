@@ -27,7 +27,9 @@ website:
     search: true
     left:
       - text: "Home"
-        file: index.qmd                 
+        file: index.qmd   
+      - text: "URNs"
+        file: urns.qmd
             
           
 

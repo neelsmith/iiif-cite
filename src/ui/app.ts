@@ -20,11 +20,14 @@ import { fileStem, selectionKey, selectionsText, type CanvasSelections } from ".
 import { el } from "./dom.ts";
 import { CanvasView } from "./canvas-view.ts";
 import { download } from "./clipboard.ts";
+import { forPage, httpOrigins, HttpsUpgradeError, manifestForPage } from "../lib/https.ts";
 
 export interface AppOptions {
   root: HTMLElement;
   fetch?: Fetch;
   version?: string;
+  /** Page served over https: request http URLs over https (default: from location.protocol). */
+  https?: boolean;
   /** Called whenever a canvas is shown in the viewer. */
   onOpen?: (c: CanvasInfo, index: number, app: App) => void;
 }
@@ -45,7 +48,22 @@ export interface App {
 interface UrnSource { map: UrnMap; label: string; fromFile: boolean }
 
 export function startApp(opts: AppOptions): App {
-  const fetchFn: Fetch = opts.fetch ?? ((u) => fetch(u));
+  const pageIsHttps = opts.https ?? location.protocol === "https:";
+  const baseFetch: Fetch = opts.fetch ?? ((u) => fetch(u));
+  /** http origins whose URLs (from a manifest) were switched to https for this page. */
+  const upgradedOrigins = new Set<string>();
+  /** Fetch, upgrading http URLs on an https page (with a clear error if https doesn't answer). */
+  const fetchFn: Fetch = async (url) => {
+    const up = forPage(url, pageIsHttps);
+    try {
+      return await baseFetch(up);
+    } catch (err) {
+      const httpUrl = up !== url ? url : url.replace(/^https:/, "http:");
+      const origin = (() => { try { return new URL(httpUrl).origin; } catch { return ""; } })();
+      if (up !== url || upgradedOrigins.has(origin)) throw new HttpsUpgradeError(httpUrl);
+      throw err;
+    }
+  };
   const { root } = opts;
   let manifest: ManifestInfo | null = null;
   let manifestUrl = "";
@@ -189,7 +207,10 @@ export function startApp(opts: AppOptions): App {
     loading = true; render();
     try {
       const m = await loadManifest(url, fetchFn);
-      if (manifestUrl === url) manifest = m;
+      if (manifestUrl === url) {
+        if (pageIsHttps) for (const o of httpOrigins(m)) upgradedOrigins.add(o);
+        manifest = manifestForPage(m, pageIsHttps);
+      }
     } catch (err) {
       if (manifestUrl === url) manifestError = (err as Error).message;
     } finally {

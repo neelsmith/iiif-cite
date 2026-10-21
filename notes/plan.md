@@ -103,7 +103,8 @@ full-resolution image, so `cite-roi`'s `screenToFrac`/`roiToScreen` and imagevie
    removed; it imports `cite-roi` v1.0.0. 123 tests pass; its five built pages are
    byte-identical to before. (Logged in imageviewer's notes, session 29.)
 5. **Check against real servers** — HMT Venetus A and SUB Göttingen: work (Neel, 2026-10-20,
-   on the Mac). Still to try: serving over https (mixed content with HMT's http images).
+   on the Mac). GitHub Pages (https): `info.json` was blocked as mixed content — fixed
+   2026-10-21 by upgrading http→https on https pages; to re-check on Pages.
    Originally: — e.g. HMT and a large library, in headless Chromium:
    v2 and v3 manifests, level 0/1/2 services, CORS when opened from `file://`.
 
@@ -112,5 +113,5 @@ full-resolution image, so `cite-roi`'s `screenToFrac`/`roiToScreen` and imagevie
 - URN map: is `canvas|urn` right, or key on the Image API service id instead / as well?
 - Should one URN map cover several manifests (add a `manifest` column)?
 - Export also as W3C/IIIF annotations (an AnnotationPage per canvas)?
-- HMT over https: does www.homermultitext.org/iipsrv answer on https? If so, offer an
-  "upgrade http image URLs" option for when iiif-cite is served from GitHub Pages.
+- (Resolved 2026-10-21) HMT over https: yes. On an https page iiif-cite now requests every http
+  URL over https (`lib/https.ts`); a server with no https gets an explanatory error.
