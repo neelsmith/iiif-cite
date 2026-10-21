@@ -51,7 +51,7 @@ npm run package -- ../projects/complutensian.json
 
 ## Result
 
-The result is `dist/complutensian.html`. Opening it in a browser looks like this:
+The result is written to `dist/complutensian.html`. Opening it in a browser looks like this:
 
 ![A packaged app](./imgs/packaged.png)
 
