@@ -4,6 +4,6 @@
     "href": "index.html",
     "title": "iiif-cite",
     "section": "",
-    "text": "A single-page web app to make IIIF browsing citable.\n\nA demo installation"
+    "text": "A single-page web app to make IIIF browsing citable.\nDemos:\n\nIo. Friderici Weidleri Historia Astronomiae (manifest from Universität Göttingen)\nVenetus A manuscript (manifest from Homer Multitext project)\n\nOther manifests to try: the Complutensian Bible, volumes:\n1. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json\n2. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v2-manifest.json\n3. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v3-manifest.json\n4. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v4-manifest.json\n5. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v5-manifest.json\n6. https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v6-manifest.json"
   }
 ]
