@@ -1,0 +1,47 @@
+{
+  "@context": "http://iiif.io/api/presentation/3/context.json",
+  "id": "https://example.org/iiif/book/manifest",
+  "type": "Manifest",
+  "label": { "en": ["Book 1"] },
+  "items": [
+    {
+      "id": "https://example.org/iiif/book/canvas/p1",
+      "type": "Canvas",
+      "label": { "none": ["p. 1"] },
+      "width": 3000, "height": 4000,
+      "thumbnail": [{ "id": "https://example.org/iiif/image/p1/full/100,/0/default.jpg", "type": "Image" }],
+      "items": [{
+        "id": "https://example.org/iiif/book/page/p1/1", "type": "AnnotationPage",
+        "items": [{
+          "id": "https://example.org/iiif/book/annotation/p1-image", "type": "Annotation",
+          "motivation": "painting", "target": "https://example.org/iiif/book/canvas/p1",
+          "body": {
+            "id": "https://example.org/iiif/image/p1/full/max/0/default.jpg",
+            "type": "Image", "format": "image/jpeg", "width": 6000, "height": 8000,
+            "service": [{ "id": "https://example.org/iiif/image/p1", "type": "ImageService3", "profile": "level1" }]
+          }
+        }]
+      }]
+    },
+    {
+      "id": "https://example.org/iiif/book/canvas/p2",
+      "type": "Canvas",
+      "label": { "en": ["p. 2"] },
+      "width": 3000, "height": 4000,
+      "items": [{
+        "type": "AnnotationPage",
+        "items": [{
+          "type": "Annotation", "motivation": "painting",
+          "body": {
+            "type": "Choice",
+            "items": [
+              { "id": "https://example.org/iiif/image/p2-color/full/max/0/default.jpg", "type": "Image",
+                "service": [{ "@id": "https://example.org/iiif/image/p2-color/info.json", "@type": "ImageService2", "profile": "http://iiif.io/api/image/2/level2.json" }] },
+              { "id": "https://example.org/iiif/image/p2-uv/full/max/0/default.jpg", "type": "Image" }
+            ]
+          }
+        }]
+      }]
+    }
+  ]
+}

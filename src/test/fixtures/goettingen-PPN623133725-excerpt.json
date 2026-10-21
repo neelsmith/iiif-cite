@@ -1,0 +1,135 @@
+{
+ "@context": "http://iiif.io/api/presentation/2/context.json",
+ "@id": "https://manifests.sub.uni-goettingen.de/id/PPN623133725",
+ "@type": "sc:Manifest",
+ "label": "Io. Friderici Weidleri Historia Astronomiae Sive De Ortu Et Progressu Astronomiae Liber Singularis",
+ "thumbnail": {
+  "@id": "https://images.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000001/full/96,/0/default.jpg",
+  "service": {
+   "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest",
+   "@context": "http://iiif.io/api/image/2/context.json",
+   "profile": "http://iiif.io/api/image/2/level1.json"
+  }
+ },
+ "sequences": [
+  {
+   "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/sequence/normal",
+   "@type": "sc:Sequence",
+   "label": "Current Page Order",
+   "canvases": [
+    {
+     "@type": "sc:Canvas",
+     "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/canvas/gdz:PPN623133725:00000001",
+     "label": " - ",
+     "height": 400,
+     "width": 300,
+     "images": [
+      {
+       "@context": "http://iiif.io/api/presentation/2/context.json",
+       "@type": "oa:Annotation",
+       "motivation": "sc:painting",
+       "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/annotation/gdz:PPN623133725:00000001",
+       "resource": {
+        "@id": "https://manifests.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000001",
+        "@type": "dctypes:Image",
+        "format": "image/jpeg",
+        "service": {
+         "@id": "https://images.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000001",
+         "@context": "http://iiif.io/api/image/2/context.json",
+         "profile": "http://iiif.io/api/image/2/level1.json"
+        },
+        "height": 400,
+        "width": 300
+       },
+       "on": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/canvas/gdz:PPN623133725:00000001"
+      }
+     ]
+    },
+    {
+     "@type": "sc:Canvas",
+     "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/canvas/gdz:PPN623133725:00000002",
+     "label": " - ",
+     "height": 400,
+     "width": 300,
+     "images": [
+      {
+       "@context": "http://iiif.io/api/presentation/2/context.json",
+       "@type": "oa:Annotation",
+       "motivation": "sc:painting",
+       "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/annotation/gdz:PPN623133725:00000002",
+       "resource": {
+        "@id": "https://manifests.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000002",
+        "@type": "dctypes:Image",
+        "format": "image/jpeg",
+        "service": {
+         "@id": "https://images.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000002",
+         "@context": "http://iiif.io/api/image/2/context.json",
+         "profile": "http://iiif.io/api/image/2/level1.json"
+        },
+        "height": 400,
+        "width": 300
+       },
+       "on": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/canvas/gdz:PPN623133725:00000002"
+      }
+     ]
+    },
+    {
+     "@type": "sc:Canvas",
+     "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/canvas/gdz:PPN623133725:00000025",
+     "label": "1",
+     "height": 400,
+     "width": 300,
+     "images": [
+      {
+       "@context": "http://iiif.io/api/presentation/2/context.json",
+       "@type": "oa:Annotation",
+       "motivation": "sc:painting",
+       "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/annotation/gdz:PPN623133725:00000025",
+       "resource": {
+        "@id": "https://manifests.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000025",
+        "@type": "dctypes:Image",
+        "format": "image/jpeg",
+        "service": {
+         "@id": "https://images.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000025",
+         "@context": "http://iiif.io/api/image/2/context.json",
+         "profile": "http://iiif.io/api/image/2/level1.json"
+        },
+        "height": 400,
+        "width": 300
+       },
+       "on": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/canvas/gdz:PPN623133725:00000025"
+      }
+     ]
+    },
+    {
+     "@type": "sc:Canvas",
+     "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/canvas/gdz:PPN623133725:00000085",
+     "label": "61",
+     "height": 400,
+     "width": 300,
+     "images": [
+      {
+       "@context": "http://iiif.io/api/presentation/2/context.json",
+       "@type": "oa:Annotation",
+       "motivation": "sc:painting",
+       "@id": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/annotation/gdz:PPN623133725:00000085",
+       "resource": {
+        "@id": "https://manifests.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000085",
+        "@type": "dctypes:Image",
+        "format": "image/jpeg",
+        "service": {
+         "@id": "https://images.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000085",
+         "@context": "http://iiif.io/api/image/2/context.json",
+         "profile": "http://iiif.io/api/image/2/level1.json"
+        },
+        "height": 400,
+        "width": 300
+       },
+       "on": "https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/canvas/gdz:PPN623133725:00000085"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

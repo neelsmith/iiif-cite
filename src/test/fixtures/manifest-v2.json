@@ -1,0 +1,41 @@
+{
+  "@context": "http://iiif.io/api/presentation/2/context.json",
+  "@id": "https://example.org/iiif/ms1/manifest",
+  "@type": "sc:Manifest",
+  "label": [{ "@value": "Manuscrit 1", "@language": "fr" }, { "@value": "Manuscript 1", "@language": "en" }],
+  "sequences": [{
+    "@type": "sc:Sequence",
+    "canvases": [
+      {
+        "@id": "https://example.org/iiif/ms1/canvas/1r",
+        "@type": "sc:Canvas",
+        "label": "folio 1r",
+        "width": 4000, "height": 6000,
+        "thumbnail": { "@id": "https://example.org/thumbs/1r.jpg" },
+        "images": [{
+          "@type": "oa:Annotation", "motivation": "sc:painting",
+          "on": "https://example.org/iiif/ms1/canvas/1r",
+          "resource": {
+            "@id": "https://example.org/iiif/image/1r/full/full/0/default.jpg",
+            "@type": "dctypes:Image", "format": "image/jpeg", "width": 4000, "height": 6000,
+            "service": {
+              "@context": "http://iiif.io/api/image/2/context.json",
+              "@id": "https://example.org/iiif/image/1r/",
+              "profile": "http://iiif.io/api/image/2/level2.json"
+            }
+          }
+        }]
+      },
+      {
+        "@id": "https://example.org/iiif/ms1/canvas/1v",
+        "@type": "sc:Canvas",
+        "label": "folio 1v",
+        "width": 4000, "height": 6000,
+        "images": [{
+          "@type": "oa:Annotation", "motivation": "sc:painting",
+          "resource": { "@id": "https://example.org/static/1v.jpg", "@type": "dctypes:Image" }
+        }]
+      }
+    ]
+  }]
+}

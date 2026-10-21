@@ -1,0 +1,47 @@
+{
+ "ppi": {
+  "x": 200.0,
+  "y": 200.0
+ },
+ "@context": "http://iiif.io/api/image/2/context.json",
+ "@id": "https://images.sub.uni-goettingen.de/iiif/image/gdz:PPN623133725:00000001",
+ "width": 1408,
+ "height": 1672,
+ "protocol": "http://iiif.io/api/image",
+ "profile": "https://iiif.io/api/image/2/level2.json",
+ "sizes": [
+  {
+   "height": 104.5,
+   "width": 88.0
+  },
+  {
+   "height": 209.0,
+   "width": 176.0
+  },
+  {
+   "height": 418.0,
+   "width": 352.0
+  },
+  {
+   "height": 836.0,
+   "width": 704.0
+  },
+  {
+   "height": 1672.0,
+   "width": 1408.0
+  }
+ ],
+ "tiles": [
+  {
+   "width": 512,
+   "height": 512,
+   "scaleFactors": [
+    1,
+    2,
+    4,
+    8,
+    16
+   ]
+  }
+ ]
+}
