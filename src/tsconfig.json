@@ -5,11 +5,13 @@
     "moduleResolution": "Bundler",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "strict": true,
+    "allowJs": true,
+    "checkJs": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "types": ["vitest/globals", "node"]
   },
-  "include": ["lib", "ui", "build", "test", "main.ts", "vite-env.d.ts", "vite.config.ts"]
+  "include": ["lib", "ui", "build", "test", "scripts", "main.ts", "vite-env.d.ts", "vite.config.ts"]
 }

@@ -1,0 +1,15 @@
+{
+  "title": "Example project",
+  "collections": [
+    {
+      "label": "Complutensian Bible, vol. 1 (BNE)",
+      "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json",
+      "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex"
+    },
+    {
+      "label": "Venetus A (HMT)",
+      "manifest": "https://raw.githubusercontent.com/homermultitext/hmt-archive/refs/heads/master/iiif/venetusA.json"
+    }
+  ],
+  "default": "Complutensian Bible, vol. 1 (BNE)"
+}

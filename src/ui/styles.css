@@ -23,6 +23,8 @@ body { margin: 0; background: var(--bg); color: var(--fg);
   border: 1px solid var(--accent); background: var(--accent); color: var(--accent-fg); white-space: nowrap; }
 .load button.file { background: none; color: inherit; border-color: var(--line); }
 .version { color: var(--muted); font-size: 12px; margin-left: auto; }
+.bar select.collections { flex: 0 1 420px; min-width: 0; padding: 6px 12px; font: inherit; font-size: 14px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--bg); color: inherit; }
 
 .content { padding: 0 16px 48px; }
 .notices { margin: 12px 0 0; padding: 10px 14px; background: var(--warn); border-radius: 8px; font-size: 14px; }

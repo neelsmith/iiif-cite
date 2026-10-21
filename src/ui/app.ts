@@ -30,6 +30,7 @@ import { download } from "./clipboard.ts";
 import { forPage, httpOrigins, HttpsUpgradeError, manifestForPage } from "../lib/https.ts";
 import { UrnMapper } from "./urn-mapper.ts";
 import { findByUrn, linkTo } from "../lib/urn-link.ts";
+import type { ProjectConfig } from "../lib/project-config.mjs";
 
 export interface AppOptions {
   root: HTMLElement;
@@ -37,6 +38,13 @@ export interface AppOptions {
   version?: string;
   /** Page served over https: request http URLs over https (default: from location.protocol). */
   https?: boolean;
+  /**
+   * A packaged project page (scripts/package.mjs): its title, and a menu of collections
+   * (manifest + URN map) in place of the manifest and URN map inputs.
+   */
+  config?: ProjectConfig | null;
+  /** Problems with the page's configuration block (shown; the generic app is used instead). */
+  configErrors?: string[];
   /** Called whenever a canvas is shown in the viewer. */
   onOpen?: (c: CanvasInfo, index: number, app: App) => void;
 }
@@ -55,6 +63,21 @@ export interface App {
 }
 
 interface UrnSource { map: UrnMap; label: string; fromFile: boolean }
+
+/**
+ * Packaged page: open the default collection when the link names no manifest, and fill in a
+ * collection's URN map when the link names its manifest without one.
+ */
+function applyDefaultCollection(config: ProjectConfig) {
+  const h = new URLSearchParams(location.hash.replace(/^#/, ""));
+  const manifest = h.get("manifest");
+  const c = manifest ? config.collections.find((x) => x.manifest === manifest) : config.collections[config.defaultIndex];
+  if (!c) return; // a manifest from outside the project: shown as "Other"
+  if (!manifest) h.set("manifest", c.manifest);
+  if (c.urns && !h.get("urns")) h.set("urns", c.urns);
+  const hash = h.toString();
+  if (`#${hash}` !== location.hash) history.replaceState(history.state, "", location.pathname + location.search + `#${hash}`);
+}
 
 /** Link parameters the app reads from the hash (and accepts in a ?query). */
 const LINK_KEYS = ["manifest", "urns", "urn", "canvas", "roi"];
@@ -76,6 +99,9 @@ function queryToHash() {
 
 export function startApp(opts: AppOptions): App {
   queryToHash();
+  const config = opts.config ?? null;
+  const appTitle = config?.title ?? "iiif-cite";
+  if (config) applyDefaultCollection(config);
   const pageIsHttps = opts.https ?? location.protocol === "https:";
   const baseFetch: Fetch = opts.fetch ?? ((u) => fetch(u));
   /** http origins whose URLs (from a manifest) were switched to https for this page. */
@@ -113,9 +139,23 @@ export function startApp(opts: AppOptions): App {
     const all = [...store.values()];
     download(selectionsText(all, urnFor), `${fileStem(manifest?.label ?? "")}-regions.txt`);
   });
+  // Packaged page: a menu of the project's collections instead of the two inputs.
+  const collectionMenu = el("select", { class: "collections", name: "collection", "aria-label": "Collection" });
+  collectionMenu.addEventListener("change", () => {
+    const c = config?.collections[Number(collectionMenu.value)];
+    if (!c) return;
+    if (mapping && mapper.dirty && !confirm("Open another collection without downloading the URN map? Your changes will be lost.")) {
+      renderCollectionMenu();
+      return;
+    }
+    pushedCanvas = false;
+    setHash({ manifest: c.manifest, urns: c.urns, canvas: null, roi: null, urn: null });
+  });
   const bar = el("header", { class: "bar" },
-    el("h1", {}, "iiif-cite"), manifestForm, urnForm, exportBtn,
-    el("span", { class: "version" }, opts.version ? `v${opts.version}` : ""));
+    el("h1", {}, appTitle),
+    ...(config ? [collectionMenu] : [manifestForm, urnForm]),
+    exportBtn,
+    el("span", { class: "version" }, opts.version ? `${config ? "iiif-cite " : ""}v${opts.version}` : ""));
   const main = el("main", { class: "content" });
   const view = new CanvasView({
     fetch: fetchFn,
@@ -380,7 +420,8 @@ export function startApp(opts: AppOptions): App {
     main.replaceChildren(...content());
     updateExport();
     syncCanvas();
-    document.title = manifest?.label ? `${manifest.label} · iiif-cite` : "iiif-cite";
+    document.title = manifest?.label ? `${manifest.label} · ${appTitle}` : appTitle;
+    renderCollectionMenu();
   }
 
   function content(): Node[] {
@@ -401,6 +442,7 @@ export function startApp(opts: AppOptions): App {
         if (unknown.length) notices.push(`URN map ${urns.label}: ${unknown.length} canvas id(s) not in this manifest, e.g. ${unknown[0]}`);
       }
     }
+    if (opts.configErrors?.length) notices.unshift(`This page's project configuration can't be used: ${opts.configErrors.join("; ")}`);
     if (notices.length) out.push(el("div", { class: "notices", role: "status" }, el("ul", {}, ...notices.map((n) => el("li", {}, n)))));
 
     if (!manifestUrl) {
@@ -518,6 +560,16 @@ export function startApp(opts: AppOptions): App {
     cell.append(box);
     input.focus();
     input.select();
+  }
+
+  /** The collection menu, showing the open manifest (or "Other: …" for one not in the project). */
+  function renderCollectionMenu() {
+    if (!config) return;
+    const current = readHash(location.hash).manifest ?? "";
+    const i = config.collections.findIndex((c) => c.manifest === current);
+    const options = config.collections.map((c, k) => el("option", { value: String(k), selected: k === i }, c.label));
+    if (i < 0 && current) options.push(el("option", { value: "other", selected: true, disabled: true }, `Other: ${manifest?.label || current}`));
+    collectionMenu.replaceChildren(...options);
   }
 
   function urnFor(c: CanvasInfo) { return urnForCanvas(urns?.map ?? null, c); }

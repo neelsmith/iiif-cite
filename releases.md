@@ -2,6 +2,9 @@
 
 Current release: **0.1.1**
 
+
+**0.2.0**, *?*: adds options for building preconfigured apps.
+
 **0.1.1**, *Oct. 21, 2026*: fixes a bug in addressing image URNs with multiple ROIs.
 
 

@@ -72,3 +72,8 @@
 - Found: a link carried only one urn= (repeats: last won; urn= + roi=: roi dropped). Neel chose
   repeated urn= only (no roi= with URNs). Built: repeated urn=, "Copy link to all", side-panel
   note for links citing several images. 104 tests pass; build 57 kB. Not committed.
+- Phase 8 built: packaged project pages (`lib/project-config.mjs`, `scripts/package.mjs`,
+  `npm run package`, collection menu in `ui/app.ts`, `main.ts` reads the config block,
+  `projects/example.json`; tsconfig `allowJs`/`checkJs` for the .mjs files). 116 tests pass;
+  build 60 kB. Browser check (synthetic server): packaged page shows title + menu, no inputs,
+  switching collections works, missing manifest gives a notice. Not committed.
