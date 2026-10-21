@@ -72,3 +72,7 @@
 - Found: a link carried only one urn= (repeats: last won; urn= + roi=: roi dropped). Neel chose
   repeated urn= only (no roi= with URNs). Built: repeated urn=, "Copy link to all", side-panel
   note for links citing several images. 104 tests pass; build 57 kB. Not committed.
+- Shift-drag cursor: holding Shift over the photo shows a crosshair (`.zoom.shift-draw`, set by
+  `RoiLayer` from Shift keydown/keyup, pointermove's shiftKey, cleared on window blur), kept
+  through a Shift-drag even if Shift is let go. `RoiLayer` now takes the view's abort signal for
+  its window listeners. 105 tests pass; build 58 kB. Not checked in a real browser. Not committed.

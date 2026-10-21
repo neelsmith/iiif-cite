@@ -55,6 +55,26 @@ function drag(target: Element, from: [number, number], to: [number, number], shi
 }
 
 describe("region selection", () => {
+  it("holding Shift shows a crosshair over the photo, kept through a Shift-drag", async () => {
+    await open(at("00000001"));
+    const v = app.view.viewer.el;
+    const shift = (type: string) => window.dispatchEvent(new KeyboardEvent(type, { key: "Shift", shiftKey: type === "keydown" }));
+    expect(v.classList.contains("shift-draw")).toBe(false);
+    shift("keydown");
+    expect(v.classList.contains("shift-draw")).toBe(true);
+    shift("keyup");
+    expect(v.classList.contains("shift-draw")).toBe(false);
+    // Let go of Shift mid-drag: still drawing, so still a crosshair until the pointer is released.
+    v.dispatchEvent(new MouseEvent("pointerdown", { bubbles: true, cancelable: true, button: 0, shiftKey: true, clientX: 100, clientY: 100 }));
+    shift("keyup");
+    expect(v.classList.contains("shift-draw")).toBe(true);
+    window.dispatchEvent(new MouseEvent("pointerup", { clientX: 300, clientY: 300 }));
+    expect(v.classList.contains("shift-draw")).toBe(false);
+    shift("keydown");
+    window.dispatchEvent(new Event("blur"));
+    expect(v.classList.contains("shift-draw")).toBe(false);
+  });
+
   it("Shift-drag draws a region: panel, link, URN and a link to view the region", async () => {
     await open(`&urns=${encodeURIComponent(URNS)}${at("00000001")}`);
     drag(app.view.viewer.el, [0.25, 0.5], [0.75, 0.75], true);
