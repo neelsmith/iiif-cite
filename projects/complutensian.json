@@ -1,11 +1,45 @@
-{ 
-    "title": "Complutensian Bible (Madrid copy)",
-    "collections": [ 
-        { 
-            "label": "Volume 1", 
-            "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json",
-            "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex" 
-        }
-    ],
-    "default": "Volume 1" 
+{
+  "title": "Example project",
+  "collections": [
+    {
+      "label": "Complutensian Bible, vol. 1 (BNE)",
+      "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json",
+      "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex"
+    },
+    
+    {
+      "label": "Complutensian Bible, vol. 2 (BNE)",
+      "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v2-manifest.json",
+      "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol2-urns.cex"
+    },
+
+    {
+      "label": "Complutensian Bible, vol. 3 (BNE)",
+      "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v3-manifest.json",
+      "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol3-urns.cex"
+    },
+
+    {
+      "label": "Complutensian Bible, vol. 4 (BNE)",
+      "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v4-manifest.json",
+      "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol4-urns.cex"
+    },
+
+    {
+      "label": "Complutensian Bible, vol. 5 (BNE)",
+      "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v5-manifest.json",
+      "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol5-urns.cex"
+    },
+
+    {
+      "label": "Complutensian Bible, vol. 6 (BNE)",
+      "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v6-manifest.json",
+      "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol6-urns.cex"
+    }
+
+
+
+
+  ],
+  "default": "Complutensian Bible, vol. 1 (BNE)"
 }
