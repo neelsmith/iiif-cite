@@ -1,5 +1,7 @@
 # Development notes
 
+**Never commit or push.** Neel commits himself (2026-10-23): leave changes in the working tree.
+
 ## node_modules belongs to the Mac
 
 `src/node_modules` must be installed on Neel's Mac: Vite 8's bundler (rolldown) and

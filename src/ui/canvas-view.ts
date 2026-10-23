@@ -37,6 +37,10 @@ export interface ShowArgs {
   haveUrnMap: boolean;
   /** Selections to show when the canvas is opened (ignored when re-showing the open canvas). */
   rois?: Roi[];
+  /** The image is from an image catalog (its own URNs; no IIIF service). */
+  catalog?: boolean;
+  /** Catalog fields to show (caption, tags, credits, …), non-empty only. */
+  details?: [string, string][];
 }
 
 export class CanvasView {
@@ -168,7 +172,7 @@ export class CanvasView {
     const c = a.canvas;
     const row = (k: string, ...v: (Node | string)[]) => [el("dt", {}, k), el("dd", {}, ...v)];
     const urn = a.urn ? el("code", { class: "urn" }, a.urn)
-      : el("span", { class: "muted" }, a.haveUrnMap ? "Not in the URN map" : "No URN map loaded");
+      : el("span", { class: "muted" }, a.catalog ? "No URN in the catalog" : a.haveUrnMap ? "Not in the URN map" : "No URN map loaded");
     const size = this.imageSize ? `${this.imageSize.w} × ${this.imageSize.h} px` : "…";
     this.panel.replaceChildren(
       ...(this.note ? [el("p", { class: "panel-note", role: "status" }, this.note)] : []),
@@ -177,7 +181,10 @@ export class CanvasView {
       ...(this.opts.linkFor ? [this.linkButton([], "Copy link to this image")] : []),
       el("dl", {},
         ...row("URN", urn),
-        ...row("Canvas", el("code", {}, c.id)),
+        ...(a.details ?? []).flatMap(([k, v]) => row(k, v)),
+        ...(a.catalog
+          ? row("File", el("a", { href: c.imageUrl ?? "", target: "_blank", rel: "noopener" }, c.id))
+          : row("Canvas", el("code", {}, c.id))),
         ...row("Image", size),
         ...(c.service ? row("Image service", el("a", { href: infoUrl(c.service), target: "_blank", rel: "noopener" }, "info.json")) : [])),
       this.selBox,
@@ -207,13 +214,15 @@ export class CanvasView {
     };
     const items = rois.map((r, i) => {
       const urn = a.urn ? roiUrn(a.urn, r) : "";
-      const img = regionImageUrl(sel, r);
+      // A catalog image has no IIIF server to cut out the region: open the whole image with it outlined.
+      const img = regionImageUrl(sel, r) ?? (a.catalog && this.opts.linkFor ? this.opts.linkFor(a.canvas, [r]).url : null);
       const li = el("li", { class: i === cur ? "current" : "" },
         btn(String(i + 1), "Make this the current selection", () => this.roi.select(i), "sel-num"),
         el("code", {}, formatRoi(r)), copyBtn(formatRoi(r), "Copy x,y,w,h"),
         btn("×", "Remove this selection", () => this.roi.remove(i), "sel-btn sel-remove"),
         ...(urn ? [el("code", { class: "sel-urn" }, urn), copyBtn(urn, "Copy CITE2 URN")] : []),
-        ...(img ? [el("a", { class: "sel-img", href: img, target: "_blank", rel: "noopener" }, "View this region")] : []),
+        ...(img ? [el("a", { class: "sel-img", href: img, target: "_blank", rel: "noopener",
+          title: a.catalog ? "Open the whole image with this region outlined, in a new tab" : "Open just this region, in a new tab" }, "View this region")] : []),
         ...(this.opts.linkFor ? [this.linkButton([r], "Copy link")] : []));
       return li;
     });
@@ -222,7 +231,8 @@ export class CanvasView {
     this.selBox.replaceChildren(
       el("h3", {}, `Selections (${rois.length})`),
       ...(rois.length ? [el("ol", {}, ...items)] : [hint("Shift-drag on the image, or press Select and drag, to mark a region.")]),
-      ...(rois.length && !a.urn ? [hint(a.haveUrnMap ? "This canvas is not in the URN map, so there are no CITE2 URNs."
+      ...(rois.length && !a.urn ? [hint(a.catalog ? "This image has no URN in the catalog, so there are no CITE2 URNs."
+        : a.haveUrnMap ? "This canvas is not in the URN map, so there are no CITE2 URNs."
         : "Load a URN map to get CITE2 URNs.")] : []),
       ...(rois.length ? [el("div", { class: "sel-actions" },
         ...(urns.length ? [btn("Download", "Save the URNs as a text file", () =>

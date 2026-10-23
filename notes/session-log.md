@@ -81,3 +81,15 @@
   `projects/example.json`; tsconfig `allowJs`/`checkJs` for the .mjs files). 116 tests pass;
   build 60 kB. Browser check (synthetic server): packaged page shows title + menu, no inputs,
   switching collections works, missing manifest gives a notice. Not committed.
+
+## Session 3 — 2026-10-23
+
+- Phase 9 built: image catalogs (plan.md "Phase 9"): `lib/catalog.ts`, `lib/browse.ts`,
+  `loadSource` in `lib/load.ts`; `ui/app.ts` (catalog=/thumbs=, Thumbnails box, auto-detect,
+  grouping/filter bar), `ui/canvas-view.ts` (catalog fields, "View this region" link),
+  `lib/project-config.mjs` (catalog collections). Fixture `test/fixtures/lips7-catalog.cex`.
+- `test/project.test.ts` imported the removed `src/projects/example.json`: restored as
+  `test/fixtures/example-project.json`.
+- 137 tests pass; build 71 kB. Not checked in a real browser (couldn't reach the test catalog from
+  here). Not committed.
+- Neel: never commit for him (noted at the top of development.md).
