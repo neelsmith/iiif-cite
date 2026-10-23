@@ -1,21 +1,26 @@
 // @ts-check
 /**
- * Configuration of a packaged project page: a title and a list of collections (manifest +
- * URN map). Plain JavaScript (with JSDoc types) so both the app and the Node packaging script
+ * Configuration of a packaged project page: a title and a list of collections (a IIIF
+ * manifest + URN map, or an image catalog). Plain JavaScript (with JSDoc types) so both the app and the Node packaging script
  * (scripts/package.mjs) can use it without a build step. Pure.
  *
  *   {
  *     "title": "Complutensian Bible",
  *     "collections": [
- *       { "label": "Volume 1", "manifest": "https://…/v1-manifest.json", "urns": "https://…/vol1-urns.cex" }
+ *       { "label": "Volume 1", "manifest": "https://…/v1-manifest.json", "urns": "https://…/vol1-urns.cex" },
+ *       { "label": "Photographs", "catalog": "https://…/images/photos.cex", "thumbnails": true }
  *     ],
  *     "default": "Volume 1"
  *   }
  *
- * `urns` is optional; `default` (a collection's label or 0-based index) defaults to the first.
+ * Each collection has either `manifest` (with an optional `urns`) or `catalog` (with an optional
+ * `thumbnails`, default false). `default` (a collection's label or 0-based index) defaults to
+ * the first.
  */
 
-/** @typedef {{ label: string, manifest: string, urns: string | null }} Collection */
+/**
+ * @typedef {{ label: string, manifest: string | null, urns: string | null, catalog: string | null, thumbnails: boolean }} Collection
+ */
 /** @typedef {{ title: string, collections: Collection[], defaultIndex: number }} ProjectConfig */
 
 /** Id of the JSON <script> block in iiif-cite.html that a packaged page fills in. */
@@ -50,9 +55,22 @@ export function validateConfig(json) {
       const label = typeof r.label === "string" ? r.label.trim() : "";
       if (!label) errors.push(`${where}: "label" must be a non-empty string`);
       else if (collections.some((x) => x.label === label)) errors.push(`${where}: label "${label}" is used twice`);
-      if (!isUrl(r.manifest)) errors.push(`${where}: "manifest" must be an http(s) URL`);
-      if (r.urns !== undefined && r.urns !== null && r.urns !== "" && !isUrl(r.urns)) errors.push(`${where}: "urns" must be an http(s) URL`);
-      collections.push({ label, manifest: String(r.manifest ?? ""), urns: isUrl(r.urns) ? /** @type {string} */ (r.urns) : null });
+      const given = (/** @type {string} */ k) => r[k] !== undefined && r[k] !== null && r[k] !== "";
+      if (given("catalog")) {
+        if (given("manifest")) errors.push(`${where}: give either "manifest" or "catalog", not both`);
+        if (!isUrl(r.catalog)) errors.push(`${where}: "catalog" must be an http(s) URL`);
+        if (given("urns")) errors.push(`${where}: "urns" is for manifests (a catalog has its own URNs)`);
+        if (r.thumbnails !== undefined && typeof r.thumbnails !== "boolean") errors.push(`${where}: "thumbnails" must be true or false`);
+      } else {
+        if (!isUrl(r.manifest)) errors.push(`${where}: "manifest" (or "catalog") must be an http(s) URL`);
+        if (given("urns") && !isUrl(r.urns)) errors.push(`${where}: "urns" must be an http(s) URL`);
+        if (given("thumbnails")) errors.push(`${where}: "thumbnails" is for catalogs`);
+      }
+      const known = new Set(["label", "manifest", "urns", "catalog", "thumbnails"]);
+      for (const k of Object.keys(r)) if (!known.has(k)) errors.push(`${where}: unknown setting "${k}"`);
+      collections.push(given("catalog")
+        ? { label, manifest: null, urns: null, catalog: String(r.catalog), thumbnails: r.thumbnails === true }
+        : { label, manifest: String(r.manifest ?? ""), urns: isUrl(r.urns) ? /** @type {string} */ (r.urns) : null, catalog: null, thumbnails: false });
     });
   }
   let defaultIndex = 0;

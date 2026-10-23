@@ -181,6 +181,37 @@ no free-form manifest / URN-map inputs on packaged pages.
   as "Other: …". Copy link still makes full links (manifest + urns + urn) — on this page's
   address, but they work on any iiif-cite. A broken config: notice + the generic app.
 
+## Phase 9 — image catalogs (built 2026-10-23)
+
+Neel: a second kind of source, images on a web server listed in a delimited-text catalog, from two
+parameters: the catalog URL and whether it has thumbnails. Grouping/filtering ported from
+imageviewer; one URL box for both kinds (auto-detect); "View this region" for a catalog image
+shows the whole image with the region outlined.
+
+- Catalog (`lib/catalog.ts`): header line with at least `path` and `urn`; optional `caption`,
+  `credits`, `license`, `tags` (comma-separated), `year`, `place`. Delimiter `|`, else tab, else
+  comma (from the header line). `path` is resolved against the catalog URL (segments
+  URL-encoded). Thumbnails: `<folder>/_thumbs/<file>.jpg` (Project1/imageA.png →
+  Project1/_thumbs/imageA.png.jpg). NB this differs from imageviewer's `_thumbs/<whole path>.jpg`
+  at the image root.
+- Read into a `ManifestInfo` (canvas id = path, label = caption, static image, thumbnail) plus a
+  `UrnMap` keyed by canvas id, so grid, viewer, selections, export and links are unchanged.
+  Problems (no urn column, bad/missing/duplicate URNs, repeated paths) are notices; no `path`
+  column = not a catalog.
+- Link: `catalog=<url>[&thumbs=1]` instead of `manifest=`/`urns=`; `urn=` links work the same.
+  `lib/load.ts loadSource` decides by content (JSON → manifest, delimited text with `path` →
+  catalog); the form guesses from the file extension, and the hash key is corrected after loading.
+  URN-map form and Map URNs are hidden for catalogs.
+- Grid (`lib/browse.ts`): group by Catalog order | Tag (an image in each of its tags, Untagged
+  last); Year/Place drop-downs when those columns have values; text filter (all words, any field
+  incl. path and URN). `group=`, `year=`, `place=` kept in the hash, not in copied links; the
+  filter text is not kept. Previous/next and "n / m" follow the images shown, each once.
+- Viewer panel: Caption, Tags, Year, Place, Credits, License, File (link to the image). "View this
+  region" = the region's iiif-cite link in a new tab.
+- Project config: a collection is `{ label, manifest, urns? }` or `{ label, catalog, thumbnails? }`.
+- Not checked in a real browser. CORS: the catalog must be fetchable cross-origin (the images
+  need not be); not verified for shot.holycross.edu.
+
 ## Open questions
 
 - (Resolved, phase 6) URN maps are keyed by the Image API service id (`image|urn|label`);

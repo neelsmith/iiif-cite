@@ -23,10 +23,27 @@ This page is incomplete but should provide enough examples to get you started. T
 
 
 
-## Addressing citable image data
+## Addressing cataloged files
+
+- Start from the address of a **ready-to-use installation** of `iiif-cite.html` (e.g. `https://neelsmith.github.io/iiif-cite/iiif-cite.html`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html))
+- To add a **delimited-text catalog**, append `&catalog=` (e.g., `#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex))
+- To use **precomputed thumbnail images** for light table view, append `&thumbs=1` ([live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex&thumbs=1))
+
+
+
+
+## Addressing citable image data from IIIF sources
 
 - Start from the address of a **ready-to-use installation** of `iiif-cite.html`  (e.g. `https://neelsmith.github.io/iiif-cite/iiif-cite.html`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html))
 - Add a manifest with `#manifest=` *and* a URN map with `urns=` (e.g., `manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex))
 - Append references to images with one or more additions of `&urn=` (e.g.`urn=urn:cite2:citebne:complutensian1.v1:v1p5@0.1857,0.1178,0.5239,0.0940`, [live link](
 https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex&urn=urn:cite2:citebne:complutensian1.v1:v1p5@0.1857,0.1178,0.5239,0.0940)) 
+
+
+
+## Addressing citable image data from cataloged images
+
+- Start from the address of a **ready-to-use installation** of `iiif-cite.html`  (e.g. `https://neelsmith.github.io/iiif-cite/iiif-cite.html`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html))
+- Add a **delimited-text catalog** with `&catalog=` (e.g., `#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex))
+- Append references to images with one or more additions of `&urn=` (e.g.`&urn=urn:cite2:citeleiden:lipsius7.v1:IMG_1203@0.4187,0.3937,0.1598,0.0182`, [live link](https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex&urn=urn:cite2:citeleiden:lipsius7.v1:IMG_1203@0.4187,0.3937,0.1598,0.0182))
 

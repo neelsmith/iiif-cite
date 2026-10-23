@@ -8,6 +8,7 @@ import type { ImageService } from "./manifest.ts";
 import { infoUrl } from "./image-api.ts";
 import { parseImageInfo, type ImageInfo } from "./tiles.ts";
 import { HttpsUpgradeError } from "./https.ts";
+import { looksLikeCatalog, parseCatalog, type CatalogInfo } from "./catalog.ts";
 
 export type Fetch = (url: string) => Promise<Response>;
 
@@ -46,4 +47,20 @@ export async function loadImageInfo(svc: ImageService, fetchFn: Fetch): Promise<
   let json: unknown;
   try { json = JSON.parse(await res.text()); } catch { throw new Error(`${url}: not JSON`); }
   return parseImageInfo(json, svc);
+}
+
+export type Source = { kind: "manifest"; manifest: ManifestInfo } | { kind: "catalog"; catalog: CatalogInfo };
+
+/**
+ * Fetch a IIIF manifest or an image catalog, telling them apart by content: JSON is a
+ * manifest; delimited text with a `path` column is a catalog (images relative to `url`).
+ */
+export async function loadSource(url: string, fetchFn: Fetch, thumbs: boolean): Promise<Source> {
+  const text = await (await get(url, fetchFn)).text();
+  let json: unknown;
+  try { json = JSON.parse(text); } catch {
+    if (looksLikeCatalog(text)) return { kind: "catalog", catalog: parseCatalog(text, url, thumbs) };
+    throw new Error(`${url}: neither a IIIF manifest (JSON) nor an image catalog (delimited text with a "path" column)`);
+  }
+  return { kind: "manifest", manifest: parseManifest(json) };
 }

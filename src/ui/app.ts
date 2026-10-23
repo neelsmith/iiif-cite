@@ -15,9 +15,18 @@
  * any roi= in the link is ignored: regions come from the URNs. Links may use ?… (query) or #…;
  * a query is moved into the hash on arrival, and urn= becomes canvas=/roi= once resolved.
  * "Copy link" / "Copy link to all" in the canvas view make such links.
+ *
+ * Image catalogs (lib/catalog.ts): #catalog=<url>[&thumbs=1] loads a delimited-text list of
+ * images on a web server (paths relative to the catalog, each with its CITE2 URN) instead of
+ * a manifest. The same URL box takes either; the content decides which it is, and the link
+ * is corrected to say. Its images are shown like static-image canvases (id = path); the
+ * catalog is its own URN map. The grid can be grouped by tag and filtered (lib/browse.ts;
+ * group=, year=, place= are kept in the hash but not put in copied links).
  */
 import { readHash, withHash } from "../lib/hash.ts";
-import { loadManifest, loadUrnMapUrl, type Fetch } from "../lib/load.ts";
+import { loadSource, loadUrnMapUrl, type Fetch } from "../lib/load.ts";
+import type { CatalogInfo } from "../lib/catalog.ts";
+import { browse, facetValues, GROUP_MODES, type BrowseOptions, type Facet, type GroupMode } from "../lib/browse.ts";
 import type { CanvasInfo, ManifestInfo } from "../lib/manifest.ts";
 import type { Size } from "../lib/zoom.ts";
 import { parseUrnMap, urnForCanvas, type UrnMap } from "../lib/urn-map.ts";
@@ -52,6 +61,8 @@ export interface AppOptions {
 export interface App {
   readonly manifest: ManifestInfo | null;
   readonly urnMap: UrnMap | null;
+  /** The loaded image catalog, when the source is one (then `manifest` is its images). */
+  readonly catalog: CatalogInfo | null;
   urnFor(c: CanvasInfo): string | null;
   readonly view: CanvasView;
   /** Every canvas with selections this session (all manifests). */
@@ -70,17 +81,23 @@ interface UrnSource { map: UrnMap; label: string; fromFile: boolean }
  */
 function applyDefaultCollection(config: ProjectConfig) {
   const h = new URLSearchParams(location.hash.replace(/^#/, ""));
-  const manifest = h.get("manifest");
-  const c = manifest ? config.collections.find((x) => x.manifest === manifest) : config.collections[config.defaultIndex];
-  if (!c) return; // a manifest from outside the project: shown as "Other"
-  if (!manifest) h.set("manifest", c.manifest);
+  const manifest = h.get("manifest"), catalog = h.get("catalog");
+  const c = manifest || catalog
+    ? config.collections.find((x) => (!!manifest && x.manifest === manifest) || (!!catalog && x.catalog === catalog))
+    : config.collections[config.defaultIndex];
+  if (!c) return; // a source from outside the project: shown as "Other"
+  if (!manifest && !catalog) h.set(c.catalog ? "catalog" : "manifest", (c.catalog ?? c.manifest)!);
+  if (c.catalog && c.thumbnails && !h.has("thumbs")) h.set("thumbs", "1");
   if (c.urns && !h.get("urns")) h.set("urns", c.urns);
   const hash = h.toString();
   if (`#${hash}` !== location.hash) history.replaceState(history.state, "", location.pathname + location.search + `#${hash}`);
 }
 
 /** Link parameters the app reads from the hash (and accepts in a ?query). */
-const LINK_KEYS = ["manifest", "urns", "urn", "canvas", "roi"];
+const LINK_KEYS = ["manifest", "urns", "catalog", "thumbs", "urn", "canvas", "roi"];
+
+/** A URL that names a delimited-text file, so probably an image catalog (the content decides). */
+const catalogLike = (url: string) => { try { return /\.(cex|txt|csv|tsv)$/i.test(new URL(url).pathname); } catch { return false; } };
 
 /** Move link parameters from the query string into the hash (query wins), without reloading. */
 function queryToHash() {
@@ -122,13 +139,23 @@ export function startApp(opts: AppOptions): App {
   let manifest: ManifestInfo | null = null;
   let manifestUrl = "";
   let manifestError = "";
+  /** The source is an image catalog: its rows, URNs and the grid's grouping/filters. */
+  let catalog: CatalogInfo | null = null;
+  const browseOpts: BrowseOptions = { group: "none", query: "", year: "", place: "" };
+  /** Catalog images shown in the grid, each once, in order (previous/next follow it). */
+  let visibleOrder: CanvasInfo[] = [];
   let urns: UrnSource | null = null;
   let urnError = "";
   let loading = false;
 
   // ---- static chrome
-  const manifestInput = el("input", { type: "url", name: "manifest", placeholder: "IIIF manifest URL", required: true, "aria-label": "IIIF manifest URL" });
-  const manifestForm = el("form", { class: "load" }, manifestInput, el("button", { type: "submit" }, "Load"));
+  const manifestInput = el("input", { type: "url", name: "manifest", placeholder: "IIIF manifest or image catalog URL", required: true,
+    "aria-label": "IIIF manifest or image catalog URL" });
+  const thumbsBox = el("input", { type: "checkbox", name: "thumbs" });
+  const manifestForm = el("form", { class: "load" }, manifestInput,
+    el("label", { class: "thumbs", title: "For an image catalog: each folder of images has a _thumbs folder of thumbnails (<image name>.jpg)" },
+      thumbsBox, " Thumbnails"),
+    el("button", { type: "submit" }, "Load"));
   const urnInput = el("input", { type: "url", name: "urns", placeholder: "URN map URL (.cex)", "aria-label": "URN map URL" });
   const urnFile = el("input", { type: "file", accept: ".cex,.txt,.csv,text/plain", hidden: true, "aria-label": "URN map file" });
   const urnForm = el("form", { class: "load urns" }, urnInput, el("button", { type: "submit" }, "Load URNs"),
@@ -149,7 +176,8 @@ export function startApp(opts: AppOptions): App {
       return;
     }
     pushedCanvas = false;
-    setHash({ manifest: c.manifest, urns: c.urns, canvas: null, roi: null, urn: null });
+    setHash({ manifest: c.manifest, urns: c.urns, catalog: c.catalog, thumbs: c.catalog && c.thumbnails ? "1" : null,
+      canvas: null, roi: null, urn: null, year: null, place: null });
   });
   const bar = el("header", { class: "bar" },
     el("h1", {}, appTitle),
@@ -199,7 +227,7 @@ export function startApp(opts: AppOptions): App {
   /** Selections this session, keyed by manifest URL + canvas id. */
   const store = new Map<string, CanvasSelections>();
   /** Grid tiles of the current manifest, by canvas id (for the selection-count badges). */
-  let tiles = new Map<string, HTMLElement>();
+  let tiles = new Map<string, HTMLElement[]>();
   root.replaceChildren(bar, main, view.el);
   /** The open canvas was opened from the grid in this page, so Back returns to the grid. */
   let pushedCanvas = false;
@@ -208,7 +236,13 @@ export function startApp(opts: AppOptions): App {
     e.preventDefault();
     if (mapping && mapper.dirty && !confirm("Load another manifest without downloading the URN map? Your changes will be lost.")) return;
     pushedCanvas = false;
-    setHash({ manifest: manifestInput.value.trim(), canvas: null });
+    // A guess from the file name; once loaded, the content decides (and the link is corrected).
+    const url = manifestInput.value.trim(), cat = catalogLike(url);
+    setHash({ manifest: cat ? null : url, catalog: cat ? url : null, thumbs: thumbsBox.checked ? "1" : null,
+      ...(cat ? { urns: null } : {}), canvas: null, roi: null, year: null, place: null });
+  });
+  thumbsBox.addEventListener("change", () => {
+    if (catalog && readHash(location.hash).catalog) setHash({ thumbs: thumbsBox.checked ? "1" : null });
   });
   urnForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -250,11 +284,17 @@ export function startApp(opts: AppOptions): App {
     return { canvas: c.id, roi: rois.length ? formatRois(rois) : null };
   };
 
+  /** The images previous/next step through: a catalog's shown images (if c is among them), else all. */
+  function navList(c: CanvasInfo): CanvasInfo[] {
+    return catalog && visibleOrder.some((x) => x.id === c.id) ? visibleOrder : manifest?.canvases ?? [];
+  }
+
   function step(dir: -1 | 1) {
     const c = view.canvas;
     if (!manifest || !c) return;
-    const i = manifest.canvases.findIndex((x) => x.id === c.id) + dir;
-    if (i >= 0 && i < manifest.canvases.length) setHash(canvasHash(manifest.canvases[i]), true);
+    const list = navList(c);
+    const i = list.findIndex((x) => x.id === c.id) + dir;
+    if (i >= 0 && i < list.length) setHash(canvasHash(list[i]), true);
   }
 
   function close() {
@@ -263,10 +303,10 @@ export function startApp(opts: AppOptions): App {
   }
 
   function updateBadge(id: string) {
-    const t = tiles.get(id);
-    if (!t) return;
     const n = store.get(selectionKey(manifestUrl, id))?.rois.length ?? 0;
-    if (n) t.dataset.selections = String(n); else delete t.dataset.selections;
+    for (const t of tiles.get(id) ?? []) {
+      if (n) t.dataset.selections = String(n); else delete t.dataset.selections;
+    }
   }
 
   function updateExport() {
@@ -276,15 +316,23 @@ export function startApp(opts: AppOptions): App {
   }
 
   // ---- hash → state
-  let lastManifest = "", lastUrns = "";
+  let lastSource = "", lastUrns = "";
+  /** What the hash asks for: a catalog (catalog=, thumbs=) or a manifest. */
+  const sourceIn = (h: Record<string, string>) => {
+    const asCatalog = !!h.catalog;
+    const url = (asCatalog ? h.catalog : h.manifest) ?? "";
+    const thumbs = h.thumbs === "1";
+    return { url, thumbs, asCatalog, key: `${asCatalog ? "catalog" : "manifest"} ${thumbs} ${url}` };
+  };
   async function sync(): Promise<void> {
     const h = readHash(location.hash);
     const jobs: Promise<void>[] = [];
-    const m = h.manifest ?? "";
-    if (m !== lastManifest) {
-      lastManifest = m;
-      manifestInput.value = m;
-      jobs.push(loadM(m));
+    const src = sourceIn(h);
+    if (src.key !== lastSource) {
+      lastSource = src.key;
+      manifestInput.value = src.url;
+      thumbsBox.checked = src.thumbs;
+      jobs.push(loadM(src.url, src.thumbs, src.asCatalog));
     }
     const u = h.urns ?? "";
     if (u !== lastUrns) {
@@ -311,7 +359,7 @@ export function startApp(opts: AppOptions): App {
     const errors: string[] = [];
     const byCanvas = new Map<number, Roi[]>(); // in link order
     for (const urn of wanted) {
-      const found = findByUrn(manifest.canvases, urns?.map ?? null, urn);
+      const found = findByUrn(manifest.canvases, catalog?.urnMap ?? urns?.map ?? null, urn);
       if (!found.ok) { if (!errors.includes(found.error)) errors.push(found.error); continue; }
       if (!byCanvas.has(found.index)) byCanvas.set(found.index, []);
       if (found.roi) byCanvas.get(found.index)!.push(found.roi);
@@ -355,8 +403,10 @@ export function startApp(opts: AppOptions): App {
   function linkFor(c: CanvasInfo, rois: Roi[]): { url: string; byUrn: boolean } {
     const base = location.href.replace(/[?#].*$/, "");
     const urn = urnFor(c);
-    const map = urnsUrl();
-    const head: [string, string | null][] = [["manifest", manifestUrl], ["urns", map]];
+    const map = catalog ? manifestUrl : urnsUrl();
+    const head: [string, string | null][] = catalog
+      ? [["catalog", manifestUrl], ["thumbs", catalog.thumbs ? "1" : null]]
+      : [["manifest", manifestUrl], ["urns", map]];
     if (urn && map) {
       const cites: [string, string][] = rois.length ? rois.map((r) => ["urn", roiUrn(urn, r)]) : [["urn", urn]];
       return { url: linkTo(base, [...head, ...cites]), byUrn: true };
@@ -364,16 +414,30 @@ export function startApp(opts: AppOptions): App {
     return { url: linkTo(base, [...head, ["canvas", c.id], ["roi", rois.length ? formatRois(rois) : null]]), byUrn: false };
   }
 
-  async function loadM(url: string) {
-    manifest = null; manifestError = ""; manifestUrl = url;
+  async function loadM(url: string, thumbs: boolean, asCatalog: boolean) {
+    manifest = null; catalog = null; manifestError = ""; manifestUrl = url;
     mapping = false; mapper.dirty = false;
+    loadingWhat = asCatalog ? "catalog" : "manifest";
     if (!url) return;
     loading = true; render();
     try {
-      const m = await loadManifest(url, fetchFn);
+      const src = await loadSource(url, fetchFn, thumbs);
       if (manifestUrl === url) {
+        const m = src.kind === "catalog" ? src.catalog.manifest : src.manifest;
         if (pageIsHttps) for (const o of httpOrigins(m)) upgradedOrigins.add(o);
         manifest = manifestForPage(m, pageIsHttps);
+        if (src.kind === "catalog") {
+          catalog = { ...src.catalog, manifest };
+          startBrowsing();
+        }
+        // The link says which kind of source this is (the URL box takes either).
+        const isCatalog = src.kind === "catalog";
+        if (isCatalog !== asCatalog || (!isCatalog && thumbs)) {
+          history.replaceState(history.state, "", withHash(location.hash, {
+            manifest: isCatalog ? null : url, catalog: isCatalog ? url : null, thumbs: isCatalog && thumbs ? "1" : null }));
+          lastSource = sourceIn(readHash(location.hash)).key;
+          if (!isCatalog) thumbsBox.checked = false;
+        }
       }
     } catch (err) {
       if (manifestUrl === url) manifestError = (err as Error).message;
@@ -411,7 +475,12 @@ export function startApp(opts: AppOptions): App {
       rois = parseRois(readHash(location.hash).roi ?? "");
       setRois(c, rois, null);
     }
-    view.show({ canvas: c, index: i, count: manifest.canvases.length, urn: urnFor(c), haveUrnMap: !!urns, rois });
+    const list = navList(c);
+    const e = catalog?.entries.get(c.id);
+    const details: [string, string][] | undefined = e ? ([["Caption", e.caption], ["Tags", e.tags.join(", ")], ["Year", e.year],
+      ["Place", e.place], ["Credits", e.credits], ["License", e.license]] as [string, string][]).filter(([, v]) => v.trim()) : undefined;
+    view.show({ canvas: c, index: list.findIndex((x) => x.id === c.id), count: list.length, urn: urnFor(c),
+      haveUrnMap: !!urns || !!catalog, rois, catalog: !!catalog, details });
     if (opening) opts.onOpen?.(c, i, app);
   }
 
@@ -421,6 +490,7 @@ export function startApp(opts: AppOptions): App {
     updateExport();
     syncCanvas();
     document.title = manifest?.label ? `${manifest.label} · ${appTitle}` : appTitle;
+    urnForm.hidden = !!catalog; // a catalog carries its own URNs
     renderCollectionMenu();
   }
 
@@ -428,14 +498,14 @@ export function startApp(opts: AppOptions): App {
     const out: Node[] = [];
     const notices: (Node | string)[] = [];
     if (manifestError) notices.push(manifestError);
-    if (urnError) notices.push(`URN map: ${urnError}`);
+    if (urnError && !catalog) notices.push(`URN map: ${urnError}`);
     notices.push(...urnLinkErrors);
     if (manifest) {
       notices.push(...manifest.errors);
       const id = readHash(location.hash).canvas;
-      if (id && !manifest.canvases.some((c) => c.id === id)) notices.push(`No canvas ${id} in this manifest`);
+      if (id && !manifest.canvases.some((c) => c.id === id)) notices.push(catalog ? `No image ${id} in this catalog` : `No canvas ${id} in this manifest`);
     }
-    if (urns) {
+    if (urns && !catalog) {
       notices.push(...urns.map.errors.map((e) => `URN map ${urns!.label}: ${e}`));
       if (manifest) {
         const unknown = urnCoverage(manifest, urns.map).unknownCanvases;
@@ -446,11 +516,20 @@ export function startApp(opts: AppOptions): App {
     if (notices.length) out.push(el("div", { class: "notices", role: "status" }, el("ul", {}, ...notices.map((n) => el("li", {}, n)))));
 
     if (!manifestUrl) {
-      out.push(el("p", { class: "empty" }, "Enter the URL of a IIIF manifest (Presentation API 2.x or 3.0)."));
+      out.push(el("p", { class: "empty" }, "Enter the URL of a IIIF manifest (Presentation API 2.x or 3.0) or of an image catalog (.cex)."));
       return out;
     }
-    if (loading) { out.push(el("p", { class: "empty" }, "Loading manifest…")); return out; }
+    if (loading) { out.push(el("p", { class: "empty" }, `Loading ${loadingWhat}…`)); return out; }
     if (!manifest) return out;
+    if (catalog) {
+      const withUrn = manifest.canvases.filter((c) => urnFor(c)).length;
+      out.push(el("div", { class: "manifest-head" },
+        el("h2", {}, manifest.label),
+        el("span", { class: "count" }, `${manifest.canvases.length} images · ${withUrn} with URNs${catalog.thumbs ? "" : " · no thumbnails"}`)));
+      if (gridFor?.manifest !== manifest) refreshCatalogGrid();
+      out.push(browseBar, gridHost);
+      return out;
+    }
 
     const cov = urns ? urnCoverage(manifest, urns.map) : null;
     const mapBtn = el("button", { type: "button", class: "map-urns", "aria-pressed": String(mapping),
@@ -482,13 +561,76 @@ export function startApp(opts: AppOptions): App {
     return g;
   }
 
+  // ---- catalog grid: grouped and filtered (the bar's controls persist, so typing keeps focus)
+  const groupSeg = el("div", { class: "seg", role: "radiogroup", "aria-label": "Group by" });
+  for (const m of GROUP_MODES) {
+    const b = el("button", { type: "button", role: "radio", "data-mode": m.mode }, m.label);
+    b.addEventListener("click", () => { browseOpts.group = m.mode; keepBrowseHash(); refreshCatalogGrid(); });
+    groupSeg.append(b);
+  }
+  const facetSelect = (facet: Facet, label: string, any: string) => {
+    const s = el("select", { class: "facet-select", name: facet, "aria-label": label });
+    s.dataset.any = any;
+    s.addEventListener("change", () => { browseOpts[facet] = s.value; keepBrowseHash(); refreshCatalogGrid(); });
+    return s;
+  };
+  const facetSels: Record<Facet, HTMLSelectElement> = {
+    year: facetSelect("year", "Year", "All years"),
+    place: facetSelect("place", "Place", "All places"),
+  };
+  const search = el("input", { type: "search", name: "filter", placeholder: "Filter…", "aria-label": "Filter images" });
+  search.addEventListener("input", () => { browseOpts.query = search.value; refreshCatalogGrid(); });
+  const shownCount = el("span", { class: "count" });
+  const browseBar = el("div", { class: "browse" }, groupSeg, facetSels.year, facetSels.place, search, shownCount);
+  const gridHost = el("div", { class: "groups" });
+
+  /** A catalog was loaded: grouping and drop-downs from the hash (values it doesn't have are dropped). */
+  function startBrowsing() {
+    const h = readHash(location.hash);
+    browseOpts.group = GROUP_MODES.some((m) => m.mode === h.group) ? (h.group as GroupMode) : "none";
+    browseOpts.query = search.value = "";
+    for (const f of ["year", "place"] as Facet[]) {
+      const values = facetValues(catalog!, f);
+      browseOpts[f] = values.includes(h[f] ?? "") ? h[f] : "";
+      const s = facetSels[f];
+      s.replaceChildren(new Option(s.dataset.any!, ""), ...values.map((v) => new Option(v, v)));
+      s.value = browseOpts[f];
+      s.hidden = values.length === 0;
+    }
+    keepBrowseHash();
+  }
+
+  function keepBrowseHash() {
+    const next = withHash(location.hash, { group: browseOpts.group === "none" ? null : browseOpts.group,
+      year: browseOpts.year || null, place: browseOpts.place || null });
+    if (next !== location.hash) history.replaceState(history.state, "", next || location.pathname + location.search);
+  }
+
+  function refreshCatalogGrid() {
+    if (!catalog || !manifest) return;
+    const b = browse(catalog, browseOpts);
+    visibleOrder = b.order;
+    tiles = new Map();
+    cells = new Map();
+    groupSeg.querySelectorAll("button").forEach((x) => x.setAttribute("aria-checked", String(x.dataset.mode === browseOpts.group)));
+    gridHost.replaceChildren(...(b.groups.length ? b.groups.map((g) => el("section", { class: "group" },
+      ...(g.label ? [el("h3", {}, g.label, el("span", { class: "n" }, String(g.canvases.length)))] : []),
+      el("div", { class: "grid" }, ...g.canvases.map(tile)))) : [el("p", { class: "empty" }, "No images match the filter.")]));
+    for (const c of b.order) updateBadge(c.id);
+    const total = manifest.canvases.length;
+    shownCount.textContent = b.order.length === total ? "" : `${b.order.length} of ${total} shown`;
+    gridFor = { manifest, urns, el: gridHost };
+    // Previous/next and "n / m" in an open view follow what is shown.
+    if (view.isOpen) syncCanvas();
+  }
+
   function tile(c: CanvasInfo): HTMLElement {
     const urn = urnFor(c);
     const img = el("img", { alt: "", loading: "lazy", decoding: "async" });
     const candidates = thumbCandidates(c);
     let k = 0;
     const b = el("button", {
-      type: "button", class: `tile${urns && !urn ? " no-urn" : ""}`,
+      type: "button", class: `tile${(urns || catalog) && !urn ? " no-urn" : ""}`,
       title: urn ?? c.label, "data-canvas": c.id,
     }, img, el("span", { class: "tile-caption" }, c.label));
     img.addEventListener("error", () => {
@@ -500,7 +642,7 @@ export function startApp(opts: AppOptions): App {
       pushedCanvas = true;
       setHash(canvasHash(c));
     });
-    tiles.set(c.id, b);
+    tiles.set(c.id, [...(tiles.get(c.id) ?? []), b]);
     // The draft URN under the thumbnail (shown in Map URNs mode); click to edit.
     const urnLine = el("button", { type: "button", class: "tile-urn", title: "Change this URN" });
     urnLine.addEventListener("click", () => editUrn(c, cell));
@@ -509,6 +651,8 @@ export function startApp(opts: AppOptions): App {
     return cell;
   }
 
+  /** What is loading, for the "Loading …" message. */
+  let loadingWhat = "manifest";
   /** Grid cells (thumbnail + URN line) by canvas id. */
   let cells = new Map<string, HTMLElement>();
 
@@ -565,18 +709,20 @@ export function startApp(opts: AppOptions): App {
   /** The collection menu, showing the open manifest (or "Other: …" for one not in the project). */
   function renderCollectionMenu() {
     if (!config) return;
-    const current = readHash(location.hash).manifest ?? "";
-    const i = config.collections.findIndex((c) => c.manifest === current);
+    const h = readHash(location.hash);
+    const current = (h.catalog ?? h.manifest) ?? "";
+    const i = config.collections.findIndex((c) => (h.catalog ? c.catalog : c.manifest) === current);
     const options = config.collections.map((c, k) => el("option", { value: String(k), selected: k === i }, c.label));
     if (i < 0 && current) options.push(el("option", { value: "other", selected: true, disabled: true }, `Other: ${manifest?.label || current}`));
     collectionMenu.replaceChildren(...options);
   }
 
-  function urnFor(c: CanvasInfo) { return urnForCanvas(urns?.map ?? null, c); }
+  function urnFor(c: CanvasInfo) { return urnForCanvas(catalog ? catalog.urnMap : urns?.map ?? null, c); }
 
   const app: App = {
     get manifest() { return manifest; },
-    get urnMap() { return urns?.map ?? null; },
+    get urnMap() { return catalog?.urnMap ?? urns?.map ?? null; },
+    get catalog() { return catalog; },
     urnFor,
     view,
     selections: () => [...store.values()],

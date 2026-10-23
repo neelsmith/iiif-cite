@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-10-21">
+<meta name="dcterms.date" content="2026-10-23">
 
 <title>Addressable content – iiif-cite</title>
 <style>
@@ -93,8 +93,8 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./iiif.html"> 
-<span class="menu-text">IIIF browsing</span></a>
+    <a class="nav-link" href="./browsing.html"> 
+<span class="menu-text">Browsing image collections</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./urns.html"> 
@@ -144,7 +144,9 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#addressing-raw-iiif-manifest-data" id="toc-addressing-raw-iiif-manifest-data" class="nav-link active" data-scroll-target="#addressing-raw-iiif-manifest-data">Addressing raw IIIF manifest data</a></li>
-  <li><a href="#addressing-citable-image-data" id="toc-addressing-citable-image-data" class="nav-link" data-scroll-target="#addressing-citable-image-data">Addressing citable image data</a></li>
+  <li><a href="#addressing-cataloged-files" id="toc-addressing-cataloged-files" class="nav-link" data-scroll-target="#addressing-cataloged-files">Addressing cataloged files</a></li>
+  <li><a href="#addressing-citable-image-data-from-iiif-sources" id="toc-addressing-citable-image-data-from-iiif-sources" class="nav-link" data-scroll-target="#addressing-citable-image-data-from-iiif-sources">Addressing citable image data from IIIF sources</a></li>
+  <li><a href="#addressing-citable-image-data-from-cataloged-images" id="toc-addressing-citable-image-data-from-cataloged-images" class="nav-link" data-scroll-target="#addressing-citable-image-data-from-cataloged-images">Addressing citable image data from cataloged images</a></li>
   </ul>
 </nav>
     </div>
@@ -164,7 +166,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 21, 2026</p>
+      <p class="date">October 23, 2026</p>
     </div>
   </div>
   
@@ -202,12 +204,28 @@ ul.task-list li input[type="checkbox"] {
 <li>To add a <strong>region of interest</strong>, append <code>&amp;roi=</code> (e.g.&nbsp;<code>&amp;roi=0.3009,0.0101,0.2744,0.0586</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&amp;canvas=canvases/vol1_%2B_1r&amp;roi=0.3009,0.0101,0.2744,0.0586">live link</a>). Multiple RoI values may provided, separated by semicolons. (e.g.&nbsp;<code>&amp;roi=0.1857,0.1178,0.5239,0.0940;0.1733,0.5565,0.5414,0.1967</code>, <a href="neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&amp;canvas=canvases/vol1_%2B_1r&amp;roi=0.1857,0.1178,0.5239,0.0940;0.1733,0.5565,0.5414,0.1967">live link</a>)</li>
 </ul>
 </section>
-<section id="addressing-citable-image-data" class="level2">
-<h2 class="anchored" data-anchor-id="addressing-citable-image-data">Addressing citable image data</h2>
+<section id="addressing-cataloged-files" class="level2">
+<h2 class="anchored" data-anchor-id="addressing-cataloged-files">Addressing cataloged files</h2>
+<ul>
+<li>Start from the address of a <strong>ready-to-use installation</strong> of <code>iiif-cite.html</code> (e.g.&nbsp;<code>https://neelsmith.github.io/iiif-cite/iiif-cite.html</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html">live link</a>)</li>
+<li>To add a <strong>delimited-text catalog</strong>, append <code>&amp;catalog=</code> (e.g., <code>#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex">live link</a>)</li>
+<li>To use <strong>precomputed thumbnail images</strong> for light table view, append <code>&amp;thumbs=1</code> (<a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex&amp;thumbs=1">live link</a>)</li>
+</ul>
+</section>
+<section id="addressing-citable-image-data-from-iiif-sources" class="level2">
+<h2 class="anchored" data-anchor-id="addressing-citable-image-data-from-iiif-sources">Addressing citable image data from IIIF sources</h2>
 <ul>
 <li>Start from the address of a <strong>ready-to-use installation</strong> of <code>iiif-cite.html</code> (e.g.&nbsp;<code>https://neelsmith.github.io/iiif-cite/iiif-cite.html</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html">live link</a>)</li>
 <li>Add a manifest with <code>#manifest=</code> <em>and</em> a URN map with <code>urns=</code> (e.g., <code>manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&amp;urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&amp;urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex">live link</a>)</li>
 <li>Append references to images with one or more additions of <code>&amp;urn=</code> (e.g.<code>urn=urn:cite2:citebne:complutensian1.v1:v1p5@0.1857,0.1178,0.5239,0.0940</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&amp;urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex&amp;urn=urn:cite2:citebne:complutensian1.v1:v1p5@0.1857,0.1178,0.5239,0.0940">live link</a>)</li>
+</ul>
+</section>
+<section id="addressing-citable-image-data-from-cataloged-images" class="level2">
+<h2 class="anchored" data-anchor-id="addressing-citable-image-data-from-cataloged-images">Addressing citable image data from cataloged images</h2>
+<ul>
+<li>Start from the address of a <strong>ready-to-use installation</strong> of <code>iiif-cite.html</code> (e.g.&nbsp;<code>https://neelsmith.github.io/iiif-cite/iiif-cite.html</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html">live link</a>)</li>
+<li>Add a <strong>delimited-text catalog</strong> with <code>&amp;catalog=</code> (e.g., <code>#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex">live link</a>)</li>
+<li>Append references to images with one or more additions of <code>&amp;urn=</code> (e.g.<code>&amp;urn=urn:cite2:citeleiden:lipsius7.v1:IMG_1203@0.4187,0.3937,0.1598,0.0182</code>, <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex&amp;urn=urn:cite2:citeleiden:lipsius7.v1:IMG_1203@0.4187,0.3937,0.1598,0.0182">live link</a>)</li>
 </ul>
 
 
@@ -621,7 +639,7 @@ ul.task-list li input[type="checkbox"] {
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p><code>iiif-cite</code> version <strong>0.2.0</strong>, website last updated October 21, 2026</p>
+<p><code>iiif-cite</code> version <strong>0.3.0</strong>, website last updated October 23, 2026</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;

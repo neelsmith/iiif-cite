@@ -171,3 +171,20 @@ body.viewing { overflow: hidden; }
 .urn-edit label { font-size: 12px; display: flex; align-items: center; gap: 4px; }
 .urn-edit input[name=count] { width: 5em; font: inherit; padding: 2px 4px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: inherit; }
 .urn-edit button { padding: 2px 8px; font-size: 12px; }
+
+/* Image catalogs: Thumbnails box in the URL form; grouping and filter bar (after imageviewer). */
+.load[hidden] { display: none; }
+.load .thumbs { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; white-space: nowrap; cursor: pointer; }
+.load .thumbs input { flex: none; margin: 0; padding: 0; accent-color: var(--accent); }
+.browse { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 0 0 12px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.seg button { border: 0; background: none; color: inherit; padding: 4px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+.seg button[aria-checked="true"] { background: var(--accent); color: var(--accent-fg); }
+.facet-select { font: inherit; font-size: 13px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); color: inherit; max-width: 180px; }
+.facet-select[hidden] { display: none; }
+.browse input[type="search"] { flex: 1 1 180px; max-width: 320px; padding: 4px 12px; font: inherit; font-size: 13px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--panel); color: inherit; }
+.groups .group + .group { margin-top: 8px; }
+.group h3 { margin: 0; padding: 12px 0 8px; font-size: 15px; font-weight: 600; }
+.group h3 .n { margin-left: 8px; color: var(--muted); font-weight: 400; font-size: 13px; }

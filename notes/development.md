@@ -1,5 +1,7 @@
 # Development notes
 
+**Never commit or push.** Neel commits himself (2026-10-23): leave changes in the working tree.
+
 ## node_modules belongs to the Mac
 
 `src/node_modules` must be installed on Neel's Mac: Vite 8's bundler (rolldown) and
@@ -21,25 +23,30 @@ If the Mac install is ever broken by a Linux install: `rm -rf node_modules && np
 
 ```sh
 cd src
-npm run build                                  # dist/iiif-cite.html (generic)
-npm run package -- projects/example.json       # dist/example.html
+npm run build                                       # dist/iiif-cite.html (generic)
+npm run package -- ../projects/pliny.json           # dist/pliny.html
 npm run package -- ~/myproject.json -o ~/site/myproject.html
 ```
 
-A project file:
+A project file (the repository's own are in `projects/`; `npm test` checks that each is valid):
 
 ```json
 {
-  "title": "Complutensian Bible",
+  "title": "Mixing citable image sources",
   "collections": [
-    { "label": "Volume 1", "manifest": "https://…/complutensian-bne-v1-manifest.json",
+    { "label": "Leiden, Lipsius 7",
+      "catalog": "https://shot.holycross.edu/images/mss/lipsius7/lips7.cex", "thumbnails": true },
+    { "label": "Complutensian Bible, vol. 1 (BNE)",
+      "manifest": "https://…/complutensian-bne-v1-manifest.json",
       "urns": "https://…/complutensian-bne-vol1-urns.cex" }
   ],
-  "default": "Volume 1"
+  "default": "Leiden, Lipsius 7"
 }
 ```
 
-`urns` and `default` are optional. The packaged page is the generic app with this JSON in its
-`iiif-cite-config` block, so it can also be edited by hand in the HTML.
-`scripts/package.mjs` is plain Node (no TypeScript), so it runs on any Node ≥ 18.
+Each collection is either an image catalog (`catalog`, optional `thumbnails`, default false) or a
+IIIF manifest (`manifest`, optional `urns`); giving both, or a setting of the other kind, is an
+error. `default` (a label or 0-based index) is optional: the first collection. The packaged page is
+the generic app with this JSON in its `iiif-cite-config` block, so it can also be edited by hand in
+the HTML. `scripts/package.mjs` is plain Node (no TypeScript), so it runs on any Node ≥ 18.
 

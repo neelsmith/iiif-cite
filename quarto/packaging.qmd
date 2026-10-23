@@ -9,13 +9,15 @@ You'll need `npm` on your system. The first time you use the package's `npm` com
 
 You can easily package a preconfigured app to create an image browsing and citation tool for your project. There are two steps:
 
-1. define pairs of manifests + URN maps in a configuration file
+1. define data collections to include in a JSON file that names a title, a list of one or more collections, and a default collection to open from 
 2. use `npm run package` to create a named app from the configuration file
 
 
-## Configuration
+## Configuring data collections
 
-Configure your app in a JSON file that names a title, a list of one or more collections (each comprising a label, manifest source, and urn map source), and a default collection. This is a complete configuration:
+
+The heart of the JSON configuration for a project is the list of collections. For a IIIF source, this comprises a label, a URL for the manifest, and a URL for URN map data.
+This is a complete configuration:
 
 ```json
 { 
@@ -30,6 +32,29 @@ Configure your app in a JSON file that names a title, a list of one or more coll
     "default": "Volume 1" 
 }
 ```
+
+
+ For a collection of simple files with a plain-text catalog, include a URL for the catalog, and `true` if the files have thumbnails, or `false` if they do not.
+
+
+
+```
+{
+  "title": "Pliny the Elder",
+  "collections": [
+    {
+        "label": "Leiden, Lipsisus 7",
+        "catalog": "https://shot.holycross.edu/images/mss/lipsius7/lips7.cex",
+        "thumbnails": true
+    }
+]
+}
+```
+
+
+::: {.callout-tip}
+You can find examples of configured projects in the github repository's [`projects` directory](https://github.com/neelsmith/iiif-cite/tree/main/projects).
+:::
 
 ## Build
 
@@ -55,4 +80,4 @@ The result is written to `dist/complutensian.html`. Opening it in a browser look
 
 ![A packaged app](./imgs/packaged.png)
 
-In lieu of the text inputs for manifest and URN map, there is a menu of citable manifests, open to the default.
+In lieu of the text inputs for manifest and URN map, there is a menu of citable manifests, open to the default collection.

@@ -3,18 +3,42 @@ title: "`iiif-cite`"
 ---
 
 
-A single-page web app to make IIIF browsing citable.
+Browse and cite images from collections published in IIIF manifests or plain-text catalogs.
 
 
-- use `iiif-cite` to [browse IIIF image collections](./iiif.qmd)
-- use URN maps to [work with citable images](./urns.qmd)
+## Collections documented in IIIF manifests
+
+
+
+- use `iiif-cite` to [browse image image collections](./browsing.qmd)
+- use URN maps to [cite images and regions of interest](./urns.qmd)
 - [compose URLs](./addressable.qmd) refering directly to collections, images and parts of images
+
+
+
+## Collections documented in plain-text catalogs
+
+- [browse and cite cataloged collections](./cataloged/)
 
 
 ## Examples
 
 
 A working installation:  [https://neelsmith.github.io/iiif-cite/iiif-cite.html](https://neelsmith.github.io/iiif-cite/iiif-cite.html)
+
+
+### From plain-text catalogs
+
+With a preloaded catalog:
+
+- images of [Leiden, Lipsius 7](https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex)
+
+
+With URNs for canonical citation:
+
+- [signature on sign out card](https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex&urn=urn:cite2:citeleiden:lipsius7.v1:IMG_1203@0.4187,0.3937,0.1598,0.0182)
+
+### From IIIF manifests
 
 With preloaded manifests:
 

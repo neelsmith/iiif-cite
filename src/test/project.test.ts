@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { readConfigText, validateConfig, CONFIG_ELEMENT_ID } from "../lib/project-config.mjs";
 import { packageHtml } from "../scripts/package.mjs";
 import { startApp, type App } from "../ui/app";
-import example from "../projects/example.json";
+import example from "./fixtures/example-project.json";
 import va from "./fixtures/hmt-venetusA-excerpt.json";
 import goe from "./fixtures/goettingen-PPN623133725-excerpt.json";
 import hmtMap from "./fixtures/hmt-venetusA-urns.cex?raw";
@@ -21,7 +21,8 @@ describe("project configuration", () => {
   it("accepts a title and collections; urns optional; default by label or index", () => {
     expect(validateConfig(project)).toEqual({ errors: [], config: {
       title: "Homer & friends", defaultIndex: 1,
-      collections: [{ label: "Weidler", manifest: GOE, urns: null }, { label: "Venetus A", manifest: VA, urns: VA_URNS }] } });
+      collections: [{ label: "Weidler", manifest: GOE, urns: null, catalog: null, thumbnails: false },
+        { label: "Venetus A", manifest: VA, urns: VA_URNS, catalog: null, thumbnails: false }] } });
     expect(validateConfig({ ...project, default: 0 }).config?.defaultIndex).toBe(0);
     expect(validateConfig({ title: "t", collections: [{ label: "a", manifest: GOE }] }).config?.defaultIndex).toBe(0);
     expect(validateConfig(example).errors).toEqual([]);
@@ -32,7 +33,7 @@ describe("project configuration", () => {
       '"title" must be a non-empty string', '"collections" must be a non-empty list', 'unknown setting "extra"']);
     expect(validateConfig({ title: "t", default: "Nope", collections: [
       { label: "a", manifest: "ftp://x" }, { label: "a", manifest: GOE, urns: "nope" }, 7] }).errors).toEqual([
-      'collection 1: "manifest" must be an http(s) URL', 'collection 2: label "a" is used twice',
+      'collection 1: "manifest" (or "catalog") must be an http(s) URL', 'collection 2: label "a" is used twice',
       'collection 2: "urns" must be an http(s) URL', "collection 3: must be an object", '"default" names no collection: "Nope"']);
   });
   it("an empty block is the generic app; bad JSON is reported", () => {

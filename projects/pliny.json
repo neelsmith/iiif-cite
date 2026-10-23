@@ -1,0 +1,10 @@
+{
+  "title": "Pliny the Elder",
+  "collections": [
+    {
+        "label": "Leiden, Lipsisus 7",
+        "catalog": "https://shot.holycross.edu/images/mss/lipsius7/lips7.cex",
+        "thumbnails": true
+    }
+]
+}
