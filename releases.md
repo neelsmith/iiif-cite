@@ -1,10 +1,11 @@
 # Release notes
 
-Current release: **0.2.0**
+Current release: **0.3.0**
 
-**0.3.0**, *?*:
+**0.3.0**, *Oct. 23, 2026*:
 
 - supports working with simple cataloged image directories
+- supports buildling project apps mixing IIIF collections and collections cataloged in delimited-text files
 
 
 **0.2.0**, *Oct. 21, 2026*: 
