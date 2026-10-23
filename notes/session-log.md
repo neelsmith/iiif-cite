@@ -93,3 +93,9 @@
 - 137 tests pass; build 71 kB. Not checked in a real browser (couldn't reach the test catalog from
   here). Not committed.
 - Neel: never commit for him (noted at the top of development.md).
+- Project files with catalog collections (Neel's `projects/pliny.json`, `projects/mixed-example.json`):
+  already supported by phase 9's `project-config.mjs`. Added `test/project-collections.test.ts`:
+  every `projects/*.json` must validate; mixed page round trip catalog → manifest → catalog
+  (thumbs/urns follow the collection), thumbnails false, URN link into the catalog when the
+  manifest is the default. Both files package. development.md "Packaging" updated (catalog
+  collections; project files now in top-level `projects/`). 144 tests pass. Not committed.

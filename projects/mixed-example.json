@@ -1,0 +1,15 @@
+{
+  "title": "Mixing citable image sources",
+  "collections": [
+    {
+        "label": "Leiden, Lipsisus 7",
+        "catalog": "https://shot.holycross.edu/images/mss/lipsius7/lips7.cex",
+        "thumbnails": true
+    },
+    {
+      "label": "Complutensian Bible, vol. 1 (BNE)",
+      "manifest": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json",
+      "urns": "https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex"
+    }
+]
+}
