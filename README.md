@@ -1,10 +1,16 @@
 # iiif-cite
 
-A single-page web app to make IIIF browsing citable.
+
+Browse and cite images from collections published in IIIF manifests or plain-text catalogs.
+
 
 
 - [documentation](https://neelsmith.github.io/iiif-cite/) 
 -  example installation of [current version](https://neelsmith.github.io/iiif-cite/iiif-cite.html) hosted on github pages
+
+
+
+
 
 
 

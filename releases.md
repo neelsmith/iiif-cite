@@ -2,6 +2,10 @@
 
 Current release: **0.2.0**
 
+**0.3.0**, *?*:
+
+- supports working with simple cataloged image directories
+
 
 **0.2.0**, *Oct. 21, 2026*: 
 

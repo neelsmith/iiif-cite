@@ -3,7 +3,11 @@ title: "`iiif-cite`"
 ---
 
 
-A single-page web app to make IIIF browsing citable.
+Browse and cite images from collections published in IIIF manifests or plain-text catalogs.
+
+
+## Collections documented in IIIF manifests
+
 
 
 - use `iiif-cite` to [browse IIIF image collections](./iiif.qmd)
@@ -11,7 +15,21 @@ A single-page web app to make IIIF browsing citable.
 - [compose URLs](./addressable.qmd) refering directly to collections, images and parts of images
 
 
+
+## Collections documented in plain-text catalogs
+
+- [browse and cite cataloged collections](./cataloged/)
+
+
 ## Examples
+
+### From plain-text catalogs
+
+::: {.callout-warning}
+## Docs TBA
+:::
+
+### From IIIF manifests
 
 
 A working installation:  [https://neelsmith.github.io/iiif-cite/iiif-cite.html](https://neelsmith.github.io/iiif-cite/iiif-cite.html)
