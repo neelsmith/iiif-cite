@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-10-21">
+<meta name="dcterms.date" content="2026-10-23">
 
 <title>iiif-cite – iiif-cite</title>
 <style>
@@ -93,8 +93,8 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./iiif.html"> 
-<span class="menu-text">IIIF browsing</span></a>
+    <a class="nav-link" href="./browsing.html"> 
+<span class="menu-text">Browsing image collections</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./urns.html"> 
@@ -143,7 +143,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#examples" id="toc-examples" class="nav-link active" data-scroll-target="#examples">Examples</a></li>
+  <li><a href="#collections-documented-in-iiif-manifests" id="toc-collections-documented-in-iiif-manifests" class="nav-link active" data-scroll-target="#collections-documented-in-iiif-manifests">Collections documented in IIIF manifests</a></li>
+  <li><a href="#collections-documented-in-plain-text-catalogs" id="toc-collections-documented-in-plain-text-catalogs" class="nav-link" data-scroll-target="#collections-documented-in-plain-text-catalogs">Collections documented in plain-text catalogs</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a>
+  <ul class="collapse">
+  <li><a href="#from-plain-text-catalogs" id="toc-from-plain-text-catalogs" class="nav-link" data-scroll-target="#from-plain-text-catalogs">From plain-text catalogs</a></li>
+  <li><a href="#from-iiif-manifests" id="toc-from-iiif-manifests" class="nav-link" data-scroll-target="#from-iiif-manifests">From IIIF manifests</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -163,7 +169,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 21, 2026</p>
+      <p class="date">October 23, 2026</p>
     </div>
   </div>
   
@@ -175,15 +181,37 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>A single-page web app to make IIIF browsing citable.</p>
+<p>Browse and cite images from collections published in IIIF manifests or plain-text catalogs.</p>
+<section id="collections-documented-in-iiif-manifests" class="level2">
+<h2 class="anchored" data-anchor-id="collections-documented-in-iiif-manifests">Collections documented in IIIF manifests</h2>
 <ul>
-<li>use <code>iiif-cite</code> to <a href="./iiif.html">browse IIIF image collections</a></li>
-<li>use URN maps to <a href="./urns.html">work with citable images</a></li>
+<li>use <code>iiif-cite</code> to <a href="./browsing.html">browse image image collections</a></li>
+<li>use URN maps to <a href="./urns.html">cite images and regions of interest</a></li>
 <li><a href="./addressable.html">compose URLs</a> refering directly to collections, images and parts of images</li>
 </ul>
+</section>
+<section id="collections-documented-in-plain-text-catalogs" class="level2">
+<h2 class="anchored" data-anchor-id="collections-documented-in-plain-text-catalogs">Collections documented in plain-text catalogs</h2>
+<ul>
+<li><a href="./cataloged/">browse and cite cataloged collections</a></li>
+</ul>
+</section>
 <section id="examples" class="level2">
 <h2 class="anchored" data-anchor-id="examples">Examples</h2>
 <p>A working installation: <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html">https://neelsmith.github.io/iiif-cite/iiif-cite.html</a></p>
+<section id="from-plain-text-catalogs" class="level3">
+<h3 class="anchored" data-anchor-id="from-plain-text-catalogs">From plain-text catalogs</h3>
+<p>With a preloaded catalog:</p>
+<ul>
+<li>images of <a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex">Leiden, Lipsius 7</a></li>
+</ul>
+<p>With URNs for canonical citation:</p>
+<ul>
+<li><a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex&amp;urn=urn:cite2:citeleiden:lipsius7.v1:IMG_1203@0.4187,0.3937,0.1598,0.0182">signature on sign out card</a></li>
+</ul>
+</section>
+<section id="from-iiif-manifests" class="level3">
+<h3 class="anchored" data-anchor-id="from-iiif-manifests">From IIIF manifests</h3>
 <p>With preloaded manifests:</p>
 <ul>
 <li><a href="https://neelsmith.github.io/iiif-cite/iiif-cite.html#manifest=https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest"><em>Io. Friderici Weidleri Historia Astronomiae</em></a> (manifest provided by <a href="https://manifests.sub.uni-goettingen.de/iiif/presentation/PPN623133725/manifest">Universität Göttingen</a>)</li>
@@ -199,6 +227,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -609,7 +638,7 @@ ul.task-list li input[type="checkbox"] {
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p><code>iiif-cite</code> version <strong>0.2.0</strong>, website last updated October 21, 2026</p>
+<p><code>iiif-cite</code> version <strong>0.3.0</strong>, website last updated October 23, 2026</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;

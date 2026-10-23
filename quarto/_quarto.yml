@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: quarto_build
 
-version: "0.2.0"
+version: "0.3.0"
 metadata:
   date: today
   
@@ -26,8 +26,8 @@ website:
     background: primary
     search: true
     left:
-      - text: "IIIF browsing" 
-        file: iiif.qmd
+      - text: "Browsing image collections" 
+        file: browsing.qmd
       - text: "URNs"
         file: urns.qmd
       - text: "Addressable content"

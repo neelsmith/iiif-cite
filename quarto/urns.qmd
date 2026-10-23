@@ -1,11 +1,20 @@
 ---
-title: Identifying images with URNs
+title: Identifying images and regions with URNs
 ---
+
+
+## Citing regions of interest
 
 ::: {.callout-note}
 ## Documentation TBA
 :::
 
-- [using a URN catalog](./urn-citation/using-catalog.qmd) to work with citable images
+## Working with cataloged images
+
+- building a [delimited-text catalog](./cataloged/)
+
+## Enriching IIIF manifests with URNs
+
+- [using an existing URN catalog](./urn-citation/using-catalog.qmd) to work with citable images
 - [building a URN catalog](./urn-citation/building-catalog.qmd)
 

@@ -1,0 +1,19 @@
+---
+title: "Browsing image collections"
+---
+
+
+
+## Browse a manifest or catalog of images
+
+Load a IIIF manifest or a delimited-text catalog, and browse images.
+
+![Lightbox of a collection loaded from a IIIF manifest](./imgs/lightbox.png)
+
+
+
+## Explore an image
+
+Pan and zoom individual images, optionally identify regions of interest.
+
+![Focus on a single image](./imgs/single-image.png)

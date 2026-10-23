@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-10-21">
+<meta name="dcterms.date" content="2026-10-23">
 
-<title>Identifying images with URNs – iiif-cite</title>
+<title>Identifying images and regions with URNs – iiif-cite</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -93,8 +93,8 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./iiif.html"> 
-<span class="menu-text">IIIF browsing</span></a>
+    <a class="nav-link" href="./browsing.html"> 
+<span class="menu-text">Browsing image collections</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./urns.html" aria-current="page"> 
@@ -138,7 +138,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./urns.html">Identifying images with URNs</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./urns.html">Identifying images and regions with URNs</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -153,7 +153,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./urns.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Identifying images with URNs</span></a>
+ <span class="menu-text">Identifying images and regions with URNs</span></a>
   </div>
 </li>
         <li class="px-0"><hr class="sidebar-divider hi "></li>
@@ -174,15 +174,23 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#citing-regions-of-interest" id="toc-citing-regions-of-interest" class="nav-link active" data-scroll-target="#citing-regions-of-interest">Citing regions of interest</a></li>
+  <li><a href="#working-with-cataloged-images" id="toc-working-with-cataloged-images" class="nav-link" data-scroll-target="#working-with-cataloged-images">Working with cataloged images</a></li>
+  <li><a href="#enriching-iiif-manifests-with-urns" id="toc-enriching-iiif-manifests-with-urns" class="nav-link" data-scroll-target="#enriching-iiif-manifests-with-urns">Enriching IIIF manifests with URNs</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Identifying images with URNs</h1>
+<h1 class="title">Identifying images and regions with URNs</h1>
 </div>
 
 
@@ -193,7 +201,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 21, 2026</p>
+      <p class="date">October 23, 2026</p>
     </div>
   </div>
   
@@ -205,6 +213,8 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="citing-regions-of-interest" class="level2">
+<h2 class="anchored" data-anchor-id="citing-regions-of-interest">Citing regions of interest</h2>
 <div class="callout callout-style-default callout-note callout-empty-content callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -218,12 +228,22 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 </div>
+</section>
+<section id="working-with-cataloged-images" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-cataloged-images">Working with cataloged images</h2>
 <ul>
-<li><a href="./urn-citation/using-catalog.html">using a URN catalog</a> to work with citable images</li>
+<li>building a <a href="./cataloged/">delimited-text catalog</a></li>
+</ul>
+</section>
+<section id="enriching-iiif-manifests-with-urns" class="level2">
+<h2 class="anchored" data-anchor-id="enriching-iiif-manifests-with-urns">Enriching IIIF manifests with URNs</h2>
+<ul>
+<li><a href="./urn-citation/using-catalog.html">using an existing URN catalog</a> to work with citable images</li>
 <li><a href="./urn-citation/building-catalog.html">building a URN catalog</a></li>
 </ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -633,7 +653,7 @@ ul.task-list li input[type="checkbox"] {
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p><code>iiif-cite</code> version <strong>0.2.0</strong>, website last updated October 21, 2026</p>
+<p><code>iiif-cite</code> version <strong>0.3.0</strong>, website last updated October 23, 2026</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;

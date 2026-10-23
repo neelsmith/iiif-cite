@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2026-10-21">
+<meta name="dcterms.date" content="2026-10-23">
 
 <title>Packaging apps – iiif-cite</title>
 <style>
@@ -128,8 +128,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./iiif.html"> 
-<span class="menu-text">IIIF browsing</span></a>
+    <a class="nav-link" href="./browsing.html"> 
+<span class="menu-text">Browsing image collections</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./urns.html"> 
@@ -178,7 +178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#configuration" id="toc-configuration" class="nav-link active" data-scroll-target="#configuration">Configuration</a></li>
+  <li><a href="#configuring-data-collections" id="toc-configuring-data-collections" class="nav-link active" data-scroll-target="#configuring-data-collections">Configuring data collections</a></li>
   <li><a href="#build" id="toc-build" class="nav-link" data-scroll-target="#build">Build</a></li>
   <li><a href="#result" id="toc-result" class="nav-link" data-scroll-target="#result">Result</a></li>
   </ul>
@@ -200,7 +200,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 21, 2026</p>
+      <p class="date">October 23, 2026</p>
     </div>
   </div>
   
@@ -227,12 +227,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>You can easily package a preconfigured app to create an image browsing and citation tool for your project. There are two steps:</p>
 <ol type="1">
-<li>define pairs of manifests + URN maps in a configuration file</li>
+<li>define data collections to include in a JSON file that names a title, a list of one or more collections, and a default collection to open from</li>
 <li>use <code>npm run package</code> to create a named app from the configuration file</li>
 </ol>
-<section id="configuration" class="level2">
-<h2 class="anchored" data-anchor-id="configuration">Configuration</h2>
-<p>Configure your app in a JSON file that names a title, a list of one or more collections (each comprising a label, manifest source, and urn map source), and a default collection. This is a complete configuration:</p>
+<section id="configuring-data-collections" class="level2">
+<h2 class="anchored" data-anchor-id="configuring-data-collections">Configuring data collections</h2>
+<p>The heart of the JSON configuration for a project is the list of collections. For a IIIF source, this comprises a label, a URL for the manifest, and a URL for URN map data. This is a complete configuration:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span> </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"Complutensian Bible (Madrid copy)"</span><span class="fu">,</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"collections"</span><span class="fu">:</span> <span class="ot">[</span> </span>
@@ -244,6 +244,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"default"</span><span class="fu">:</span> <span class="st">"Volume 1"</span> </span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For a collection of simple files with a plain-text catalog, include a URL for the catalog, and <code>true</code> if the files have thumbnails, or <code>false</code> if they do not.</p>
+<pre><code>{
+  "title": "Pliny the Elder",
+  "collections": [
+    {
+        "label": "Leiden, Lipsisus 7",
+        "catalog": "https://shot.holycross.edu/images/mss/lipsius7/lips7.cex",
+        "thumbnails": true
+    }
+]
+}</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can find examples of configured projects in the github repository’s <a href="https://github.com/neelsmith/iiif-cite/tree/main/projects"><code>projects</code> directory</a>.</p>
+</div>
+</div>
 </section>
 <section id="build" class="level2">
 <h2 class="anchored" data-anchor-id="build">Build</h2>
@@ -262,7 +286,7 @@ npm run build</code></pre>
 <figcaption>A packaged app</figcaption>
 </figure>
 </div>
-<p>In lieu of the text inputs for manifest and URN map, there is a menu of citable manifests, open to the default.</p>
+<p>In lieu of the text inputs for manifest and URN map, there is a menu of citable manifests, open to the default collection.</p>
 
 
 </section>
@@ -675,7 +699,7 @@ npm run build</code></pre>
       &nbsp;
     </div>   
     <div class="nav-footer-center">
-<p><code>iiif-cite</code> version <strong>0.2.0</strong>, website last updated October 21, 2026</p>
+<p><code>iiif-cite</code> version <strong>0.3.0</strong>, website last updated October 23, 2026</p>
 </div>
     <div class="nav-footer-right">
       &nbsp;

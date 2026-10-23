@@ -1,38 +1,136 @@
 [
   {
-    "objectID": "addressable.html",
-    "href": "addressable.html",
-    "title": "Addressable content",
+    "objectID": "browsing.html",
+    "href": "browsing.html",
+    "title": "Browsing image collections",
     "section": "",
-    "text": "CautionDocumentation in progress\n\n\n\nThis page is incomplete but should provide enough examples to get you started. The live links below are to the example installation at https://neelsmith.github.io/iiif-cite/iiif-cite.html, but you can replicate them just by opening a local copy of iif-cite.html in a web browser. The examples use:\n\nthis IIIF manifest: https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json\nthis URN map: https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex"
+    "text": "Load a IIIF manifest or a delimited-text catalog, and browse images.\n\n\n\nLightbox of a collection loaded from a IIIF manifest"
   },
   {
-    "objectID": "addressable.html#addressing-raw-iiif-manifest-data",
-    "href": "addressable.html#addressing-raw-iiif-manifest-data",
-    "title": "Addressable content",
-    "section": "Addressing raw IIIF manifest data",
-    "text": "Addressing raw IIIF manifest data\n\nStart from the address of a ready-to-use installation of iiif-cite.html (e.g. https://neelsmith.github.io/iiif-cite/iiif-cite.html, live link)\nTo add a IIIF manifest, append #manifest= (e.g., #manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json, live link)\nTo add a canvas id for a selected image, append &canvas= (e.g. &canvas=canvases/vol1_%2B_1r, live link)\nTo add a region of interest, append &roi= (e.g. &roi=0.3009,0.0101,0.2744,0.0586, live link). Multiple RoI values may provided, separated by semicolons. (e.g. &roi=0.1857,0.1178,0.5239,0.0940;0.1733,0.5565,0.5414,0.1967, live link)"
-  },
-  {
-    "objectID": "addressable.html#addressing-citable-image-data",
-    "href": "addressable.html#addressing-citable-image-data",
-    "title": "Addressable content",
-    "section": "Addressing citable image data",
-    "text": "Addressing citable image data\n\nStart from the address of a ready-to-use installation of iiif-cite.html (e.g. https://neelsmith.github.io/iiif-cite/iiif-cite.html, live link)\nAdd a manifest with #manifest= and a URN map with urns= (e.g., manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex, live link)\nAppend references to images with one or more additions of &urn= (e.g.urn=urn:cite2:citebne:complutensian1.v1:v1p5@0.1857,0.1178,0.5239,0.0940, live link)"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "iiif-cite",
+    "objectID": "browsing.html#browse-a-manifest-or-catalog-of-images",
+    "href": "browsing.html#browse-a-manifest-or-catalog-of-images",
+    "title": "Browsing image collections",
     "section": "",
-    "text": "A single-page web app to make IIIF browsing citable."
+    "text": "Load a IIIF manifest or a delimited-text catalog, and browse images.\n\n\n\nLightbox of a collection loaded from a IIIF manifest"
   },
   {
-    "objectID": "index.html#examples",
-    "href": "index.html#examples",
-    "title": "iiif-cite",
-    "section": "Examples",
-    "text": "Examples\nA working installation: https://neelsmith.github.io/iiif-cite/iiif-cite.html\nWith preloaded manifests:\n\nIo. Friderici Weidleri Historia Astronomiae (manifest provided by Universität Göttingen)\nVenetus A manuscript (manifest provided by the Homer Multitext project)\n\nWith preloaded manifest + URN map for canonical citation:\n\nComplutensian Bible from Spanish National Library, volume 1\n\nA page with multiple URN parameters:\n\nComplutensian Bible, vol. 1, quire a, page 1 recto, Greek, Hebrew and lemmatizing notes indexed with a"
+    "objectID": "browsing.html#explore-an-image",
+    "href": "browsing.html#explore-an-image",
+    "title": "Browsing image collections",
+    "section": "Explore an image",
+    "text": "Explore an image\nPan and zoom individual images, optionally identify regions of interest.\n\n\n\nFocus on a single image"
+  },
+  {
+    "objectID": "packaging.html",
+    "href": "packaging.html",
+    "title": "Packaging apps",
+    "section": "",
+    "text": "NotePrerequisites\n\n\n\nYou’ll need npm on your system. The first time you use the package’s npm commands, you’ll need to download all prerequisites by running npm install before trying to use of the package’s other npm commands.\nYou can easily package a preconfigured app to create an image browsing and citation tool for your project. There are two steps:"
+  },
+  {
+    "objectID": "packaging.html#configuring-data-collections",
+    "href": "packaging.html#configuring-data-collections",
+    "title": "Packaging apps",
+    "section": "Configuring data collections",
+    "text": "Configuring data collections\nThe heart of the JSON configuration for a project is the list of collections. For a IIIF source, this comprises a label, a URL for the manifest, and a URL for URN map data. This is a complete configuration:\n{ \n    \"title\": \"Complutensian Bible (Madrid copy)\",\n    \"collections\": [ \n        { \n            \"label\": \"Volume 1\", \n            \"manifest\": \"https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json\",\n            \"urns\": \"https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex\" \n        }\n    ],\n    \"default\": \"Volume 1\" \n}\nFor a collection of simple files with a plain-text catalog, include a URL for the catalog, and true if the files have thumbnails, or false if they do not.\n{\n  \"title\": \"Pliny the Elder\",\n  \"collections\": [\n    {\n        \"label\": \"Leiden, Lipsisus 7\",\n        \"catalog\": \"https://shot.holycross.edu/images/mss/lipsius7/lips7.cex\",\n        \"thumbnails\": true\n    }\n]\n}\n\n\n\n\n\n\nTip\n\n\n\nYou can find examples of configured projects in the github repository’s projects directory."
+  },
+  {
+    "objectID": "packaging.html#build",
+    "href": "packaging.html#build",
+    "title": "Packaging apps",
+    "section": "Build",
+    "text": "Build\nFirst build a current version of iiif-cite.html\ncd src\nnpm run build\nThis example builds an app from a JSON file in this repository’s projects directory (../projects/complutensian.json from the perspective of the src directory). Use this syntax:\nnpm run package -- ../projects/complutensian.json"
+  },
+  {
+    "objectID": "packaging.html#result",
+    "href": "packaging.html#result",
+    "title": "Packaging apps",
+    "section": "Result",
+    "text": "Result\nThe result is written to dist/complutensian.html. Opening it in a browser looks like this:\n\n\n\nA packaged app\n\n\nIn lieu of the text inputs for manifest and URN map, there is a menu of citable manifests, open to the default collection."
+  },
+  {
+    "objectID": "urn-citation/using-catalog.html",
+    "href": "urn-citation/using-catalog.html",
+    "title": "Citing images with a URN catalog",
+    "section": "",
+    "text": "CautionDocumentation TBA",
+    "crumbs": [
+      "URNs",
+      "Citing images with a URN catalog"
+    ]
+  },
+  {
+    "objectID": "urn-citation/using-catalog.html#load-data",
+    "href": "urn-citation/using-catalog.html#load-data",
+    "title": "Citing images with a URN catalog",
+    "section": "Load data",
+    "text": "Load data\n\nload a IIIF manifest\nload a URN map for the collection in the manifest either from a local file, or a source on the internet",
+    "crumbs": [
+      "URNs",
+      "Citing images with a URN catalog"
+    ]
+  },
+  {
+    "objectID": "urn-citation/using-catalog.html#cite-images",
+    "href": "urn-citation/using-catalog.html#cite-images",
+    "title": "Citing images with a URN catalog",
+    "section": "Cite images",
+    "text": "Cite images\nURNs for whole images, and for selected regions.\n\n\n\nRegions ID’ed by URN",
+    "crumbs": [
+      "URNs",
+      "Citing images with a URN catalog"
+    ]
+  },
+  {
+    "objectID": "urns.html",
+    "href": "urns.html",
+    "title": "Identifying images and regions with URNs",
+    "section": "",
+    "text": "NoteDocumentation TBA",
+    "crumbs": [
+      "URNs",
+      "Identifying images and regions with URNs"
+    ]
+  },
+  {
+    "objectID": "urns.html#citing-regions-of-interest",
+    "href": "urns.html#citing-regions-of-interest",
+    "title": "Identifying images and regions with URNs",
+    "section": "",
+    "text": "NoteDocumentation TBA",
+    "crumbs": [
+      "URNs",
+      "Identifying images and regions with URNs"
+    ]
+  },
+  {
+    "objectID": "urns.html#working-with-cataloged-images",
+    "href": "urns.html#working-with-cataloged-images",
+    "title": "Identifying images and regions with URNs",
+    "section": "Working with cataloged images",
+    "text": "Working with cataloged images\n\nbuilding a delimited-text catalog",
+    "crumbs": [
+      "URNs",
+      "Identifying images and regions with URNs"
+    ]
+  },
+  {
+    "objectID": "urns.html#enriching-iiif-manifests-with-urns",
+    "href": "urns.html#enriching-iiif-manifests-with-urns",
+    "title": "Identifying images and regions with URNs",
+    "section": "Enriching IIIF manifests with URNs",
+    "text": "Enriching IIIF manifests with URNs\n\nusing an existing URN catalog to work with citable images\nbuilding a URN catalog",
+    "crumbs": [
+      "URNs",
+      "Identifying images and regions with URNs"
+    ]
+  },
+  {
+    "objectID": "cataloged/index.html",
+    "href": "cataloged/index.html",
+    "title": "Cataloged collections of images",
+    "section": "",
+    "text": "WarningDocs TBA\n\n\n\nSee docs for imageviewer app."
   },
   {
     "objectID": "urn-citation/building-catalog.html",
@@ -79,96 +177,66 @@
     ]
   },
   {
-    "objectID": "iiif.html",
-    "href": "iiif.html",
-    "title": "Browsing IIIF collections",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "iiif-cite",
     "section": "",
-    "text": "Load a IIIF manifest, browse images.\n\n\n\nLightbox of a loaded manifest"
+    "text": "Browse and cite images from collections published in IIIF manifests or plain-text catalogs."
   },
   {
-    "objectID": "iiif.html#browse-a-manifest",
-    "href": "iiif.html#browse-a-manifest",
-    "title": "Browsing IIIF collections",
+    "objectID": "index.html#collections-documented-in-iiif-manifests",
+    "href": "index.html#collections-documented-in-iiif-manifests",
+    "title": "iiif-cite",
+    "section": "Collections documented in IIIF manifests",
+    "text": "Collections documented in IIIF manifests\n\nuse iiif-cite to browse image image collections\nuse URN maps to cite images and regions of interest\ncompose URLs refering directly to collections, images and parts of images"
+  },
+  {
+    "objectID": "index.html#collections-documented-in-plain-text-catalogs",
+    "href": "index.html#collections-documented-in-plain-text-catalogs",
+    "title": "iiif-cite",
+    "section": "Collections documented in plain-text catalogs",
+    "text": "Collections documented in plain-text catalogs\n\nbrowse and cite cataloged collections"
+  },
+  {
+    "objectID": "index.html#examples",
+    "href": "index.html#examples",
+    "title": "iiif-cite",
+    "section": "Examples",
+    "text": "Examples\nA working installation: https://neelsmith.github.io/iiif-cite/iiif-cite.html\n\nFrom plain-text catalogs\nWith a preloaded catalog:\n\nimages of Leiden, Lipsius 7\n\nWith URNs for canonical citation:\n\nsignature on sign out card\n\n\n\nFrom IIIF manifests\nWith preloaded manifests:\n\nIo. Friderici Weidleri Historia Astronomiae (manifest provided by Universität Göttingen)\nVenetus A manuscript (manifest provided by the Homer Multitext project)\n\nWith preloaded manifest + URN map for canonical citation:\n\nComplutensian Bible from Spanish National Library, volume 1\n\nA page with multiple URN parameters:\n\nComplutensian Bible, vol. 1, quire a, page 1 recto, Greek, Hebrew and lemmatizing notes indexed with a"
+  },
+  {
+    "objectID": "addressable.html",
+    "href": "addressable.html",
+    "title": "Addressable content",
     "section": "",
-    "text": "Load a IIIF manifest, browse images.\n\n\n\nLightbox of a loaded manifest"
+    "text": "CautionDocumentation in progress\n\n\n\nThis page is incomplete but should provide enough examples to get you started. The live links below are to the example installation at https://neelsmith.github.io/iiif-cite/iiif-cite.html, but you can replicate them just by opening a local copy of iif-cite.html in a web browser. The examples use:\n\nthis IIIF manifest: https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json\nthis URN map: https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex"
   },
   {
-    "objectID": "iiif.html#explore-an-image",
-    "href": "iiif.html#explore-an-image",
-    "title": "Browsing IIIF collections",
-    "section": "Explore an image",
-    "text": "Explore an image\nPan and zoom individual images, optionally identify regions of interest.\n\n\n\nFocus on a single image"
+    "objectID": "addressable.html#addressing-raw-iiif-manifest-data",
+    "href": "addressable.html#addressing-raw-iiif-manifest-data",
+    "title": "Addressable content",
+    "section": "Addressing raw IIIF manifest data",
+    "text": "Addressing raw IIIF manifest data\n\nStart from the address of a ready-to-use installation of iiif-cite.html (e.g. https://neelsmith.github.io/iiif-cite/iiif-cite.html, live link)\nTo add a IIIF manifest, append #manifest= (e.g., #manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json, live link)\nTo add a canvas id for a selected image, append &canvas= (e.g. &canvas=canvases/vol1_%2B_1r, live link)\nTo add a region of interest, append &roi= (e.g. &roi=0.3009,0.0101,0.2744,0.0586, live link). Multiple RoI values may provided, separated by semicolons. (e.g. &roi=0.1857,0.1178,0.5239,0.0940;0.1733,0.5565,0.5414,0.1967, live link)"
   },
   {
-    "objectID": "urns.html",
-    "href": "urns.html",
-    "title": "Identifying images with URNs",
-    "section": "",
-    "text": "NoteDocumentation TBA\n\n\n\n\n\n\n\nusing a URN catalog to work with citable images\nbuilding a URN catalog",
-    "crumbs": [
-      "URNs",
-      "Identifying images with URNs"
-    ]
+    "objectID": "addressable.html#addressing-cataloged-files",
+    "href": "addressable.html#addressing-cataloged-files",
+    "title": "Addressable content",
+    "section": "Addressing cataloged files",
+    "text": "Addressing cataloged files\n\nStart from the address of a ready-to-use installation of iiif-cite.html (e.g. https://neelsmith.github.io/iiif-cite/iiif-cite.html, live link)\nTo add a delimited-text catalog, append &catalog= (e.g., #catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex, live link)\nTo use precomputed thumbnail images for light table view, append &thumbs=1 (live link)"
   },
   {
-    "objectID": "urn-citation/using-catalog.html",
-    "href": "urn-citation/using-catalog.html",
-    "title": "Citing images with a URN catalog",
-    "section": "",
-    "text": "CautionDocumentation TBA",
-    "crumbs": [
-      "URNs",
-      "Citing images with a URN catalog"
-    ]
+    "objectID": "addressable.html#addressing-citable-image-data-from-iiif-sources",
+    "href": "addressable.html#addressing-citable-image-data-from-iiif-sources",
+    "title": "Addressable content",
+    "section": "Addressing citable image data from IIIF sources",
+    "text": "Addressing citable image data from IIIF sources\n\nStart from the address of a ready-to-use installation of iiif-cite.html (e.g. https://neelsmith.github.io/iiif-cite/iiif-cite.html, live link)\nAdd a manifest with #manifest= and a URN map with urns= (e.g., manifest=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json&urns=https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex, live link)\nAppend references to images with one or more additions of &urn= (e.g.urn=urn:cite2:citebne:complutensian1.v1:v1p5@0.1857,0.1178,0.5239,0.0940, live link)"
   },
   {
-    "objectID": "urn-citation/using-catalog.html#load-data",
-    "href": "urn-citation/using-catalog.html#load-data",
-    "title": "Citing images with a URN catalog",
-    "section": "Load data",
-    "text": "Load data\n\nload a IIIF manifest\nload a URN map for the collection in the manifest either from a local file, or a source on the internet",
-    "crumbs": [
-      "URNs",
-      "Citing images with a URN catalog"
-    ]
-  },
-  {
-    "objectID": "urn-citation/using-catalog.html#cite-images",
-    "href": "urn-citation/using-catalog.html#cite-images",
-    "title": "Citing images with a URN catalog",
-    "section": "Cite images",
-    "text": "Cite images\nURNs for whole images, and for selected regions.\n\n\n\nRegions ID’ed by URN",
-    "crumbs": [
-      "URNs",
-      "Citing images with a URN catalog"
-    ]
-  },
-  {
-    "objectID": "packaging.html",
-    "href": "packaging.html",
-    "title": "Packaging apps",
-    "section": "",
-    "text": "NotePrerequisites\n\n\n\nYou’ll need npm on your system. The first time you use the package’s npm commands, you’ll need to download all prerequisites by running npm install before trying to use of the package’s other npm commands.\nYou can easily package a preconfigured app to create an image browsing and citation tool for your project. There are two steps:"
-  },
-  {
-    "objectID": "packaging.html#configuration",
-    "href": "packaging.html#configuration",
-    "title": "Packaging apps",
-    "section": "Configuration",
-    "text": "Configuration\nConfigure your app in a JSON file that names a title, a list of one or more collections (each comprising a label, manifest source, and urn map source), and a default collection. This is a complete configuration:\n{ \n    \"title\": \"Complutensian Bible (Madrid copy)\",\n    \"collections\": [ \n        { \n            \"label\": \"Volume 1\", \n            \"manifest\": \"https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-v1-manifest.json\",\n            \"urns\": \"https://raw.githubusercontent.com/neelsmith/complutensian-texts/refs/heads/main/iiif/complutensian-bne-vol1-urns.cex\" \n        }\n    ],\n    \"default\": \"Volume 1\" \n}"
-  },
-  {
-    "objectID": "packaging.html#build",
-    "href": "packaging.html#build",
-    "title": "Packaging apps",
-    "section": "Build",
-    "text": "Build\nFirst build a current version of iiif-cite.html\ncd src\nnpm run build\nThis example builds an app from a JSON file in this repository’s projects directory (../projects/complutensian.json from the perspective of the src directory). Use this syntax:\nnpm run package -- ../projects/complutensian.json"
-  },
-  {
-    "objectID": "packaging.html#result",
-    "href": "packaging.html#result",
-    "title": "Packaging apps",
-    "section": "Result",
-    "text": "Result\nThe result is written to dist/complutensian.html. Opening it in a browser looks like this:\n\n\n\nA packaged app\n\n\nIn lieu of the text inputs for manifest and URN map, there is a menu of citable manifests, open to the default."
+    "objectID": "addressable.html#addressing-citable-image-data-from-cataloged-images",
+    "href": "addressable.html#addressing-citable-image-data-from-cataloged-images",
+    "title": "Addressable content",
+    "section": "Addressing citable image data from cataloged images",
+    "text": "Addressing citable image data from cataloged images\n\nStart from the address of a ready-to-use installation of iiif-cite.html (e.g. https://neelsmith.github.io/iiif-cite/iiif-cite.html, live link)\nAdd a delimited-text catalog with &catalog= (e.g., #catalog=https://shot.holycross.edu/images/mss/lipsius7/lips7.cex, live link)\nAppend references to images with one or more additions of &urn= (e.g.&urn=urn:cite2:citeleiden:lipsius7.v1:IMG_1203@0.4187,0.3937,0.1598,0.0182, live link)"
   }
 ]
