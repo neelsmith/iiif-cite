@@ -2,12 +2,11 @@
 
 Current release: **0.3.0**
 
-**0.3.1**, *Oct. 24, 2026*: adds icons.
-
-**0.3.0**, *Oct. 23, 2026*:
+**0.3.0**, *Oct. 24, 2026*:
 
 - supports working with simple cataloged image directories
 - supports buildling project apps mixing IIIF collections and collections cataloged in delimited-text files
+- renames `local.html` to `local-image-viewer.html` and adds icons for it.
 
 
 **0.2.0**, *Oct. 21, 2026*: 
