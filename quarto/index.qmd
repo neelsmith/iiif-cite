@@ -2,12 +2,23 @@
 title: "`iiif-cite`"
 ---
 
+::: {style="float: left; margin-right: 15px; margin-bottom: 5px;"}
+
+![](https://github.com/neelsmith/iiif-cite/blob/main/src/icons/apple-touch-icon.png?raw=true){width=80}
+
+:::
 
 Browse and cite images from collections published in IIIF manifests or plain-text catalogs.
 
 
+<div style="clear: left;"></div>
+
+
+::: {.clear-left}
+
 ## Collections documented in IIIF manifests
 
+:::
 
 
 - use `iiif-cite` to [browse image image collections](./browsing.qmd)

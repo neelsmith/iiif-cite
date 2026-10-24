@@ -1,8 +1,6 @@
-# iiif-cite
-
+# <img align="left" width="60" src="https://github.com/neelsmith/iiif-cite/blob/main/src/icons/apple-touch-icon.png?raw=true"/>   iiif-cite 
 
 Browse and cite images from collections published in IIIF manifests or plain-text catalogs.
-
 
 
 - [documentation](https://neelsmith.github.io/iiif-cite/) 
@@ -14,17 +12,17 @@ Browse and cite images from collections published in IIIF manifests or plain-tex
 
 
 
-## Browse IIIF manifests
+### Browse IIIF manifests
 
 ![](./quarto/imgs/lightbox.png)
 
-## Cite with URNs
+### Cite with URNs
 
 Configure for URN citation and define regions of interest:
 
 ![](./quarto/imgs/roi-w-urns.png)
 
-## Live examples
+### Live examples
 
 
 A working installation:  [https://neelsmith.github.io/iiif-cite/iiif-cite.html](https://neelsmith.github.io/iiif-cite/iiif-cite.html)
