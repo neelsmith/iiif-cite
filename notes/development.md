@@ -50,3 +50,24 @@ error. `default` (a label or 0-based index) is optional: the first collection. T
 the generic app with this JSON in its `iiif-cite-config` block, so it can also be edited by hand in
 the HTML. `scripts/package.mjs` is plain Node (no TypeScript), so it runs on any Node ≥ 18.
 
+## Serving image catalogs (CORS)
+
+An iiif-cite page on another site (e.g. GitHub Pages) can only read a catalog `.cex` if the
+catalog's server sends `Access-Control-Allow-Origin` (images need no header: they are `<img>`s).
+Checked: `curl -sI -H "Origin: https://neelsmith.github.io" <catalog URL> | grep -i access-control`.
+
+shot.holycross.edu (nginx behind an AWS load balancer; only `/etc/nginx/conf.d-managed/` is
+editable, included at `http` level) — working since 2026-10-24, in `conf.d-managed/cors.conf`:
+
+```nginx
+map $uri $catalog_cors {
+    ~\.(cex|txt|csv|tsv)$  "*";
+    default                "";
+}
+add_header Access-Control-Allow-Origin $catalog_cors always;
+```
+
+No `server { }` around it (a server block in an http-level include is a separate, empty site).
+An http-level `add_header` is inherited only by server/location blocks with no `add_header` of
+their own; nginx omits a header whose value is empty, so only catalog files get it.
+
