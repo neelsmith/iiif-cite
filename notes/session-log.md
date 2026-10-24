@@ -99,3 +99,7 @@
   (thumbs/urns follow the collection), thumbnails false, URN link into the catalog when the
   manifest is the default. Both files package. development.md "Packaging" updated (catalog
   collections; project files now in top-level `projects/`). 144 tests pass. Not committed.
+- GitHub Pages: catalog on shot.holycross.edu blocked by CORS. Fixed on the server with an
+  http-level `map` + `add_header` in `conf.d-managed/cors.conf` (development.md "Serving image
+  catalogs"). Neel confirmed it works.
+
