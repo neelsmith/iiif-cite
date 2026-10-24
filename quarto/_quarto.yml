@@ -20,7 +20,7 @@ format:
 website:
   title: "iiif-cite"
   page-footer:
-    center: "`iiif-cite` version **{{< meta version >}}**, website last updated {{< meta date >}}"
+    center: "<img src='https://github.com/neelsmith/iiif-cite/blob/main/src/icons/favicon-32.png?raw=true'>`iiif-cite` version **{{< meta version >}}**, website last updated {{< meta date >}}"
 
   navbar:
     background: primary

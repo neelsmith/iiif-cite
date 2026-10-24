@@ -188,7 +188,7 @@
     "href": "index.html#collections-documented-in-iiif-manifests",
     "title": "iiif-cite",
     "section": "Collections documented in IIIF manifests",
-    "text": "Collections documented in IIIF manifests\n\nuse iiif-cite to browse image image collections\nuse URN maps to cite images and regions of interest\ncompose URLs refering directly to collections, images and parts of images"
+    "text": "Collections documented in IIIF manifests"
   },
   {
     "objectID": "index.html#collections-documented-in-plain-text-catalogs",
