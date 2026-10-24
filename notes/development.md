@@ -71,3 +71,14 @@ No `server { }` around it (a server block in an http-level include is a separate
 An http-level `add_header` is inherited only by server/location blocks with no `add_header` of
 their own; nginx omits a header whose value is empty, so only catalog files get it.
 
+## App icon
+
+Masters and platform sets in `scratch/icons/` (IIIF logo from `scratch/iiif.svg` + a drawn curly
+opening quote; `cite-iiif-square.svg` = iPhone/full-bleed, `cite-iiif-macos.svg` = macOS tile;
+`iOS/AppIcon.appiconset`, `macOS/AppIcon.iconset` → `iconutil -c icns AppIcon.iconset`).
+Embedded in every built page from `src/icons/`: `favicon.svg`, `favicon-32.png`,
+`apple-touch-icon.png` (180 px), linked in `src/iiif-cite.html`. Vite emits `<link rel="icon">`
+targets as separate files even with `assetsInlineLimit`, so `build/inline-all.ts` turns any
+asset the page refers to into a `data:` URL (test: `test/inline-all.test.ts`). The icon files
+carry C2PA content-credential metadata (added when copied in), ~25 kB of the page's 116 kB.
+

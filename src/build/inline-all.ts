@@ -1,5 +1,11 @@
 import type { Plugin } from "vite";
 
+/** Media types of files that may be inlined into the page as data: URLs. */
+const MIME: Record<string, string> = {
+  svg: "image/svg+xml", png: "image/png", ico: "image/x-icon", jpg: "image/jpeg", jpeg: "image/jpeg",
+  webp: "image/webp", gif: "image/gif", woff2: "font/woff2", json: "application/json",
+};
+const ext = (name: string) => name.split(".").pop()!.toLowerCase();
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 // Stop inlined code from closing its own <script>/<style> tag early.
 const safeScript = (code: string) => code.replace(/<\/(script)/gi, "<\\/$1");
@@ -40,6 +46,14 @@ export function inlineAll(): Plugin {
             const tag = new RegExp(`<link\\b[^>]*\\bhref="[^"]*${escapeRe(name)}"[^>]*>`);
             if (!tag.test(page)) continue;
             page = page.replace(tag, () => `<style>${safeStyle(String(file.source))}</style>`);
+            delete bundle[name];
+          } else if (file.type === "asset" && !name.endsWith(".html") && MIME[ext(name)]) {
+            // Other files the page refers to (e.g. <link rel="icon">): Vite leaves these as
+            // separate files even under assetsInlineLimit, so make them data: URLs here.
+            const ref = new RegExp(`(href|src)="[^"]*${escapeRe(name)}"`, "g");
+            if (!ref.test(page)) continue;
+            const data = `data:${MIME[ext(name)]};base64,${Buffer.from(file.source).toString("base64")}`;
+            page = page.replace(ref, (_m, attr: string) => `${attr}="${data}"`);
             delete bundle[name];
           }
         }
