@@ -102,4 +102,8 @@
 - GitHub Pages: catalog on shot.holycross.edu blocked by CORS. Fixed on the server with an
   http-level `map` + `add_header` in `conf.d-managed/cors.conf` (development.md "Serving image
   catalogs"). Neel confirmed it works.
+- App icon: made from scratch/iiif.svg (sets in scratch/icons), then embedded in the build:
+  `src/icons/` + three <link>s in iiif-cite.html; `build/inline-all.ts` now inlines any other
+  asset the page references (Vite left the icons as files). Packaged pages inherit them.
+  145 tests pass; build 116 kB (42 kB gzip); icons decode in Chromium. Not committed.
 

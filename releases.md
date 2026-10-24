@@ -2,6 +2,8 @@
 
 Current release: **0.3.0**
 
+**0.3.1**, *Oct. 24, 2026*: adds icons.
+
 **0.3.0**, *Oct. 23, 2026*:
 
 - supports working with simple cataloged image directories
