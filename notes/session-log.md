@@ -107,3 +107,13 @@
   asset the page references (Vite left the icons as files). Packaged pages inherit them.
   145 tests pass; build 116 kB (42 kB gzip); icons decode in Chromium. Not committed.
 
+## Session 4 — 2026-10-27
+
+- Raw image data: Download image / Download region buttons, raw links, `raw=true` page
+  (`lib/raw.ts`, `ui/raw-image.ts`, `ui/raw-view.ts`; app/canvas-view wiring). Neel chose:
+  raw=true shows the image only (with Download), regions as PNG. Catalog regions cropped in the
+  browser from a CORS fetch; IIIF regions cut by the IIIF server. Fixed on the way: iipsrv file
+  names, `.bar[hidden]` overridden by `display:flex`; "Download" (URN list) renamed "Download URNs".
+  156 tests pass; build 123 kB. Chromium check: region pixel-identical, whole file byte-identical.
+  Needs image types in shot.holycross.edu's CORS map (development.md). Not committed.
+

@@ -88,7 +88,8 @@ describe("region selection", () => {
     expect($(".selections .sel-img")?.textContent).toBe("View this region");
     // Copy buttons only for x,y,w,h and the URN — no IIIF URL to copy
     expect($$(".selections li .sel-btn").map((b) => b.getAttribute("title"))).toEqual(
-      ["Copy x,y,w,h", "Remove this selection", "Copy CITE2 URN", "Copy a link that opens this region by URN"]);
+      ["Copy x,y,w,h", "Remove this selection", "Copy CITE2 URN", "Copy a link that opens this region by URN",
+        "Copy a link that shows just this region as image data (raw=true)", "Download this region, cut out at full resolution (PNG)"]);
     expect($(".export-selections")?.textContent).toBe("Export selections (1)");
     expect(($(".export-selections") as HTMLButtonElement).disabled).toBe(false);
   });
@@ -160,7 +161,7 @@ describe("region selection", () => {
     // the panel's Download is offered only when the canvas has a URN (here it has none)
     expect($$(".sel-actions button").map((b) => b.textContent)).toEqual(["Copy all", "Clear all"]);
     key("ArrowLeft"); await settle(app);
-    expect($$(".sel-actions button").map((b) => b.textContent)).toEqual(["Download", "Copy all", "Clear all"]);
+    expect($$(".sel-actions button").map((b) => b.textContent)).toEqual(["Download URNs", "Copy all", "Clear all"]);
     ($$(".sel-actions button")[0] as HTMLButtonElement).click();
     expect(clicks[1]).toBe("canvas-regions.txt"); // label "-" has no letters
     expect(await blobs[1].text()).toBe("urn:cite2:demo:weidler.v1:f1@0.2500,0.5000,0.5000,0.2500\n");

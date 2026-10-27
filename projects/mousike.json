@@ -1,0 +1,10 @@
+{
+  "title": "Images of Greek musical texts",
+  "collections": [
+    {
+        "label": "Mousike: images of Greek musical texts",
+        "catalog": "https://shot.holycross.edu/images/mousike/catalog.cex",
+        "thumbnails": false
+    }
+]
+}

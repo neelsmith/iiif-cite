@@ -35,6 +35,9 @@ import { formatRoi, formatRois, parseRois, roiUrn, type Roi } from "cite-roi";
 import { fileStem, selectionKey, selectionsText, type CanvasSelections } from "../lib/selections.ts";
 import { el } from "./dom.ts";
 import { CanvasView } from "./canvas-view.ts";
+import { RawView } from "./raw-view.ts";
+import { browserImageTools, type ImageTools } from "./raw-image.ts";
+import { isRawParam } from "../lib/raw.ts";
 import { download } from "./clipboard.ts";
 import { forPage, httpOrigins, HttpsUpgradeError, manifestForPage } from "../lib/https.ts";
 import { UrnMapper } from "./urn-mapper.ts";
@@ -54,6 +57,8 @@ export interface AppOptions {
   config?: ProjectConfig | null;
   /** Problems with the page's configuration block (shown; the generic app is used instead). */
   configErrors?: string[];
+  /** Fetching and cropping image data (Download buttons, raw=true); default: the browser's. */
+  imageTools?: ImageTools;
   /** Called whenever a canvas is shown in the viewer. */
   onOpen?: (c: CanvasInfo, index: number, app: App) => void;
 }
@@ -65,6 +70,8 @@ export interface App {
   readonly catalog: CatalogInfo | null;
   urnFor(c: CanvasInfo): string | null;
   readonly view: CanvasView;
+  /** The raw=true page. */
+  readonly raw: RawView;
   /** Every canvas with selections this session (all manifests). */
   selections(): CanvasSelections[];
   /** Remove window/document listeners (for tests, or before starting another app). */
@@ -94,7 +101,7 @@ function applyDefaultCollection(config: ProjectConfig) {
 }
 
 /** Link parameters the app reads from the hash (and accepts in a ?query). */
-const LINK_KEYS = ["manifest", "urns", "catalog", "thumbs", "urn", "canvas", "roi"];
+const LINK_KEYS = ["manifest", "urns", "catalog", "thumbs", "urn", "canvas", "roi", "raw"];
 
 /** A URL that names a delimited-text file, so probably an image catalog (the content decides). */
 const catalogLike = (url: string) => { try { return /\.(cex|txt|csv|tsv)$/i.test(new URL(url).pathname); } catch { return false; } };
@@ -190,6 +197,7 @@ export function startApp(opts: AppOptions): App {
     onStep: (dir) => step(dir),
     onClose: () => close(),
     linkFor: (c, r) => linkFor(c, r),
+    imageTools: opts.imageTools,
     onRois: (c, rois, size) => {
       setRois(c, rois, size);
       // Keep the open canvas's regions in the link without adding history entries.
@@ -484,8 +492,30 @@ export function startApp(opts: AppOptions): App {
     if (opening) opts.onOpen?.(c, i, app);
   }
 
+  // ---- raw=true: just the image data (whole image, or each cited region)
+  const rawView = new RawView(opts.imageTools ?? browserImageTools(fetchFn), fetchFn);
+  /** The canvas a raw=true link names (after urn= has been resolved), if any. */
+  function rawCanvas(): CanvasInfo | null {
+    const h = readHash(location.hash);
+    if (!isRawParam(h.raw) || !manifest || !h.canvas) return null;
+    return manifest.canvases.find((c) => c.id === h.canvas) ?? null;
+  }
+  function renderRaw(c: CanvasInfo): void {
+    const h = readHash(location.hash);
+    if (view.isOpen) view.hide();
+    bar.hidden = true;
+    document.body.classList.add("raw-page");
+    const back = withHash(location.hash, { raw: null });
+    rawView.show({ canvas: c, rois: parseRois(h.roi ?? ""), urn: urnFor(c), backUrl: `${location.pathname}${location.search}${back}` });
+    main.replaceChildren(rawView.el);
+    document.title = `${c.label} · ${appTitle}`;
+  }
+
   // ---- render
   function render() {
+    const raw = rawCanvas();
+    if (raw) { renderRaw(raw); return; }
+    if (bar.hidden) { bar.hidden = false; document.body.classList.remove("raw-page"); rawView.clear(); }
     main.replaceChildren(...content());
     updateExport();
     syncCanvas();
@@ -500,6 +530,9 @@ export function startApp(opts: AppOptions): App {
     if (manifestError) notices.push(manifestError);
     if (urnError && !catalog) notices.push(`URN map: ${urnError}`);
     notices.push(...urnLinkErrors);
+    { const h = readHash(location.hash);
+      if (isRawParam(h.raw) && manifest && !loading && !h.canvas && !h.urn && !urnLinkErrors.length)
+        notices.push("raw=true shows the data of one image: add urn= (or canvas=) to the link"); }
     if (manifest) {
       notices.push(...manifest.errors);
       const id = readHash(location.hash).canvas;
@@ -726,6 +759,7 @@ export function startApp(opts: AppOptions): App {
     urnFor,
     view,
     selections: () => [...store.values()],
+    raw: rawView,
     ready: Promise.resolve(),
     stop() { abort.abort(); view.destroy(); },
   };

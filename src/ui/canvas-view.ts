@@ -14,6 +14,7 @@ import { TileViewer } from "./tile-viewer.ts";
 import { RoiLayer } from "./roi-layer.ts";
 import { copyText, download } from "./clipboard.ts";
 import { el } from "./dom.ts";
+import { browserImageTools, imageData, saveBlob, type ImageTools } from "./raw-image.ts";
 
 export interface CanvasViewOptions {
   fetch: Fetch;
@@ -26,6 +27,8 @@ export interface CanvasViewOptions {
   onImage?: (canvas: CanvasInfo, size: Size) => void;
   /** A link to this canvas (and region): by URN when possible (`byUrn`), else by canvas id. */
   linkFor?: (canvas: CanvasInfo, rois: Roi[]) => { url: string; byUrn: boolean };
+  /** Fetching and cropping image data (Download buttons); default: the browser's. */
+  imageTools?: ImageTools;
 }
 
 export interface ShowArgs {
@@ -178,7 +181,9 @@ export class CanvasView {
       ...(this.note ? [el("p", { class: "panel-note", role: "status" }, this.note)] : []),
       el("p", { class: "pos" }, `${a.index + 1} / ${a.count}`),
       el("h2", {}, c.label),
-      ...(this.opts.linkFor ? [this.linkButton([], "Copy link to this image")] : []),
+      el("div", { class: "image-actions" },
+        ...(this.opts.linkFor ? [this.linkButton([], "Copy link to this image"), this.linkButton([], "Copy raw link", true)] : []),
+        this.downloadButton(null, "Download image")),
       el("dl", {},
         ...row("URN", urn),
         ...(a.details ?? []).flatMap(([k, v]) => row(k, v)),
@@ -221,9 +226,11 @@ export class CanvasView {
         el("code", {}, formatRoi(r)), copyBtn(formatRoi(r), "Copy x,y,w,h"),
         btn("×", "Remove this selection", () => this.roi.remove(i), "sel-btn sel-remove"),
         ...(urn ? [el("code", { class: "sel-urn" }, urn), copyBtn(urn, "Copy CITE2 URN")] : []),
-        ...(img ? [el("a", { class: "sel-img", href: img, target: "_blank", rel: "noopener",
-          title: a.catalog ? "Open the whole image with this region outlined, in a new tab" : "Open just this region, in a new tab" }, "View this region")] : []),
-        ...(this.opts.linkFor ? [this.linkButton([r], "Copy link")] : []));
+        el("div", { class: "sel-more" },
+          ...(img ? [el("a", { class: "sel-img", href: img, target: "_blank", rel: "noopener",
+            title: a.catalog ? "Open the whole image with this region outlined, in a new tab" : "Open just this region, in a new tab" }, "View this region")] : []),
+          ...(this.opts.linkFor ? [this.linkButton([r], "Copy link"), this.linkButton([r], "Raw link", true)] : []),
+          this.downloadButton(r, "Download region")));
       return li;
     });
     const urns = a.urn ? rois.map((r) => roiUrn(a.urn!, r)) : [];
@@ -235,7 +242,7 @@ export class CanvasView {
         : a.haveUrnMap ? "This canvas is not in the URN map, so there are no CITE2 URNs."
         : "Load a URN map to get CITE2 URNs.")] : []),
       ...(rois.length ? [el("div", { class: "sel-actions" },
-        ...(urns.length ? [btn("Download", "Save the URNs as a text file", () =>
+        ...(urns.length ? [btn("Download URNs", "Save the URNs as a text file", () =>
           download(urns.join("\n") + "\n", `${fileStem(a.canvas.label, "canvas")}-regions.txt`))] : []),
         copyAll(urns.length ? urns : rois.map(formatRoi), urns.length ? "URN" : "x,y,w,h"),
         ...(this.opts.linkFor && rois.length > 1 ? [this.linkButton(rois, "Copy link to all")] : []),
@@ -243,15 +250,34 @@ export class CanvasView {
     );
   }
 
-  /** "Copy link" for the open canvas (no regions), one region, or all of them. */
-  private linkButton(rois: Roi[], label: string): HTMLButtonElement {
+  /** Download the whole image (r = null) or one region at full resolution. */
+  private downloadButton(r: Roi | null, label: string): HTMLButtonElement {
     const a = this.current!;
-    const { url, byUrn } = this.opts.linkFor!(a.canvas, rois);
+    const what = r ? "this region, cut out at full resolution (PNG)" : "the image file";
+    const b = el("button", { type: "button", class: r ? "sel-btn sel-download" : "download-image", title: `Download ${what}` }, label);
+    b.addEventListener("click", () => {
+      b.textContent = "Downloading…";
+      b.disabled = true;
+      const tools = this.opts.imageTools ?? browserImageTools(this.opts.fetch);
+      imageData(a.canvas, r, a.urn, tools, this.opts.fetch).then(
+        ({ blob, name }) => { saveBlob(blob, name); b.textContent = label; b.disabled = false; },
+        (err: Error) => { b.textContent = "Download failed"; b.title = err.message; b.disabled = false; this.setNote(err.message); });
+    });
+    return b;
+  }
+
+  /** "Copy link" for the open canvas (no regions), one region, or all of them; `raw` adds raw=true. */
+  private linkButton(rois: Roi[], label: string, raw = false): HTMLButtonElement {
+    const a = this.current!;
+    const link = this.opts.linkFor!(a.canvas, rois);
+    const url = raw ? `${link.url}${link.url.includes("?") ? "&" : "?"}raw=true` : link.url;
+    const byUrn = link.byUrn;
     const what = rois.length === 0 ? "this image" : rois.length === 1 ? "this region" : "all these regions";
     const title = byUrn ? `Copy a link that opens ${what} by URN`
       : `Copy a link to ${what} (by canvas id: ${a.urn ? "load the URN map from a URL" : "it has no URN"} for a link by URN)`;
-    const cls = rois.length === 0 ? "copy-link" : rois.length === 1 ? "sel-btn sel-link" : "sel-btn sel-link-all";
-    const b = el("button", { type: "button", class: cls, title, "data-url": url }, label);
+    const cls = raw ? (rois.length === 0 ? "copy-raw-link" : "sel-btn sel-raw-link")
+      : rois.length === 0 ? "copy-link" : rois.length === 1 ? "sel-btn sel-link" : "sel-btn sel-link-all";
+    const b = el("button", { type: "button", class: cls, title: raw ? `Copy a link that shows just ${what} as image data (raw=true)` : title, "data-url": url }, label);
     b.addEventListener("click", () => copyText(url).then((ok) => { b.textContent = ok ? "Copied" : "Copy failed"; }));
     return b;
   }

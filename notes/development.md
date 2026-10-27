@@ -53,7 +53,10 @@ the HTML. `scripts/package.mjs` is plain Node (no TypeScript), so it runs on any
 ## Serving image catalogs (CORS)
 
 An iiif-cite page on another site (e.g. GitHub Pages) can only read a catalog `.cex` if the
-catalog's server sends `Access-Control-Allow-Origin` (images need no header: they are `<img>`s).
+catalog's server sends `Access-Control-Allow-Origin`. Images need it too, but only for Download
+image / Download region and raw=true (shown in `<img>` they need nothing); without it those give
+an explanatory message. To allow both, widen the map below to
+`~*\.(cex|txt|csv|tsv|jpe?g|png|webp|gif|tiff?)$`.
 Checked: `curl -sI -H "Origin: https://neelsmith.github.io" <catalog URL> | grep -i access-control`.
 
 shot.holycross.edu (nginx behind an AWS load balancer; only `/etc/nginx/conf.d-managed/` is
@@ -81,4 +84,19 @@ Embedded in every built page from `src/icons/`: `favicon.svg`, `favicon-32.png`,
 targets as separate files even with `assetsInlineLimit`, so `build/inline-all.ts` turns any
 asset the page refers to into a `data:` URL (test: `test/inline-all.test.ts`). The icon files
 carry C2PA content-credential metadata (added when copied in), ~25 kB of the page's 116 kB.
+
+## Raw image data (Download buttons, raw=true)
+
+- Viewer panel: "Download image" (the file itself) and "Copy raw link"; per region "Download
+  region" (PNG, full resolution) and "Raw link". The URN-list button is now "Download URNs".
+- `raw=true` (or `raw=1`) with `urn=` (one or more) or `canvas=`/`roi=`: a page with just the
+  image, or each region cut out, each with a Download link; "Open in iiif-cite" drops raw=.
+  It is still the iiif-cite page: an `<img src>` or curl gets HTML, not image data.
+- Catalog images: fetched with CORS (`ui/raw-image.ts`), region cropped from the fetched copy
+  with `createImageBitmap` + canvas (not from the viewer's `<img>`, which would taint the
+  canvas). IIIF images: the IIIF server cuts the region (`roiImageUrl`, full resolution).
+- Names (`lib/raw.ts`): a whole catalog file keeps its name (`IMG_1203.jpeg`); otherwise the
+  URN's object id, else the file name, else the label, plus `@x,y,w,h` for a region.
+- Checked in headless Chromium (synthetic server): region PNG pixel-identical to the original's
+  crop; whole file byte-identical; a server without the header gets the explanation.
 

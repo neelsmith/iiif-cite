@@ -122,8 +122,11 @@ body.viewing { overflow: hidden; }
 .selections code { font: 12px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; color: #ddd; overflow-wrap: anywhere; }
 .selections .sel-urn { grid-column: 2 / 4; }
 .selections .sel-urn { color: #adbcff; }
-.selections .sel-img { font-size: 12px; grid-column: 2 / 4; }
-.selections .sel-link { grid-column: 4; }
+.selections .sel-more { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.selections .sel-img { font-size: 12px; margin-right: auto; }
+.lightbox .info .image-actions { display: flex; flex-wrap: wrap; gap: 6px; margin: -4px 0 14px; }
+.lightbox .info .image-actions button { margin: 0; }
+.lightbox .info .copy-raw-link, .lightbox .info .download-image,
 .lightbox .info .copy-link { position: static; width: auto; height: auto; font-size: 12px; line-height: 1.2;
   padding: 3px 10px; border-radius: 6px; margin: -4px 0 14px; }
 .lightbox .selections button { position: static; width: auto; height: auto; font-size: 12px; line-height: 1.2;
@@ -188,3 +191,20 @@ body.viewing { overflow: hidden; }
 .groups .group + .group { margin-top: 8px; }
 .group h3 { margin: 0; padding: 12px 0 8px; font-size: 15px; font-weight: 600; }
 .group h3 .n { margin-left: 8px; color: var(--muted); font-weight: 400; font-size: 13px; }
+
+/* ---- raw=true page: just the image data */
+body.raw-page { background: var(--bg); }
+.bar[hidden] { display: none; } /* .bar sets display: flex, which would override [hidden] */
+.raw { padding: 16px; display: grid; gap: 18px; justify-items: center; }
+.raw-head { width: 100%; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.raw-head h1 { margin: 0; font-size: 16px; font-weight: 600; }
+.raw-back { font-size: 13px; color: var(--accent); }
+.raw-item { margin: 0; display: grid; gap: 8px; justify-items: center; max-width: 100%; }
+.raw-item img { max-width: min(100%, 1400px); max-height: 80vh; height: auto; display: block;
+  background: repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 0 0 / 16px 16px; box-shadow: 0 1px 6px rgba(0,0,0,.15); }
+.raw-item figcaption { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; justify-content: center; }
+.raw-item figcaption code { color: var(--fg); overflow-wrap: anywhere; }
+.raw-download { padding: 5px 14px; border-radius: 999px; background: var(--accent); color: var(--accent-fg); text-decoration: none; font-size: 13px; }
+.raw-status { color: var(--muted); font-size: 14px; max-width: 60ch; text-align: center; }
+.raw-status.error { color: #c0392b; }
+
