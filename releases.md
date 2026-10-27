@@ -2,6 +2,9 @@
 
 Current release: **0.3.0**
 
+
+**0.4.0**, *??*: adds `raw=true` option on page requests.
+
 **0.3.0**, *Oct. 24, 2026*:
 
 - supports working with simple cataloged image directories
